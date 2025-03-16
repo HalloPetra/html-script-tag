@@ -24,7 +24,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 1. Add the script to your HTML file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Initialize the widget with default settings
@@ -38,7 +38,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 You can also auto-initialize the widget by adding a data attribute to the script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" data-contact-widget-auto-init></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" data-contact-widget-auto-init></script>
 ```
 
 ### Customization
@@ -46,12 +46,12 @@ You can also auto-initialize the widget by adding a data attribute to the script
 You can customize the widget by passing configuration options:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
       // Button and speech bubble customization
-      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Custom logo for the button
+      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png', // Custom logo for the button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
       
       // Form title and description
@@ -106,9 +106,9 @@ You can also use data attributes for basic configuration:
 
 ```html
 <script 
-  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
+  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
   data-form-description="Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren."

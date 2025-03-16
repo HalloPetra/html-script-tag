@@ -311,7 +311,7 @@ function A(e) {
   const a = document.createElement("div");
   a.className = "contact-widget-logo-container";
   const i = document.createElement("img");
-  i.src = e.logoSrc || "https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png", i.alt = "Petra", a.appendChild(i), t.appendChild(a);
+  i.src = e.logoSrc || "https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png", i.alt = "Petra", a.appendChild(i), t.appendChild(a);
   const h = document.createElement("div");
   h.id = "speech-bubble", h.className = "speech-bubble", h.textContent = e.speechBubbleText || "Wie darf ich Ihnen helfen?";
   const l = document.createElement("div");
