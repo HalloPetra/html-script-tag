@@ -1,174 +1,246 @@
-# Vapi Client Integration
+# Contact Form Widget
 
-## Overview
-
-This project integrates the Vapi client into any website, providing a voice assistant for support purposes. The Vapi client is powered by an easy-to-install JavaScript SDK, which is included in the website via a simple code snippet.
+A simple, customizable contact form widget that can be embedded on any website. The widget displays a button with the Petra logo that, when clicked, shows a popup with a contact form where visitors can enter their name and phone number to request a call back. A friendly speech bubble appears after 5 seconds saying "Wie darf ich Ihnen helfen?".
 
 ## Features
 
-- **Voice Assistant**: Enhance user experience with our voice assistant instantly.
-- **Customization**: Configure the assistant's settings to match your website's needs.
-- **UI Flexibility**: If needed, use the exposed CSS classes to further customize the appearance and behavior of the assistant on your webpage.
+- Lightweight and easy to embed
+- Modern design with Inter font
+- Customizable appearance and text
+- Interactive speech bubble that appears after 5 seconds
+- Country selection for phone numbers (Germany, Austria, Switzerland)
+- Input validation with helpful error messages
+- Compliance text with customizable links to terms and privacy policy
+- Form description to set clear expectations
+- Responsive and mobile-friendly
+- Disabled submit button until valid input is provided
+- E.164 phone number format compliance
 
-## Installation
+## How to Use
 
-To add Vapi to your website, include the following javascript snippet in your HTML file inside a script tag:
+### Basic Installation
 
-```js
+1. Add the script to your HTML file:
+
+```html
+<script src="https://your-domain.com/path/to/contact-widget.js"></script>
 <script>
-  (function (d, t) {
-    var g = document.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-    g.defer = true;
-    g.async = true;
-    s.parentNode.insertBefore(g, s);
-
-    g.onload = function () {
-      const vapi = window.vapiSDK.run({
-        apiKey: "", // required Use your Public Key
-        assistant: assistant, // required
-        assistantOverrides: {}, // optional (This lets you override the assistant configuration and can be used alongside assistantId.)
-        config: buttonConfig // optional
-      });
-
-      if(vapi) {
-        // Extend more using vapi
-
-      }
-    };
-  })(document, "script");
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the widget with default settings
+    const widget = ContactWidget.init();
+  });
 </script>
 ```
 
-Where value of assistant can be your assistant ID (Dashboard > Assistants > Select your assistant > Copy the id) or assistant config like below example.
+### Auto-initialization
 
-```js
-const assistant = {
-  model: {
-    provider: "openai",
-    model: "gpt-3.5-turbo",
-    systemPrompt:
-      "You're a versatile AI assistant named Vapi who is fun to talk with.",
-  },
-  voice: {
-    provider: "11labs",
-    voiceId: "paula",
-  },
-  firstMessage: "Hi, I am Vapi how can I assist you today?",
-};
+You can also auto-initialize the widget by adding a data attribute to the script tag:
+
+```html
+<script src="https://your-domain.com/path/to/contact-widget.js" data-contact-widget-auto-init></script>
 ```
 
-You can also create squad using the assistant to handle complex workflows and tasks. For example. 
+### Customization
 
-```js
+You can customize the widget by passing configuration options:
 
-const squad = {
-  "squad": {
-    "members": [
-      {
-        "assistantId": "information-gathering-assistant-id",
-        "assistantDestinations": [{
-          "type": "assistant",
-          "assistantName": "Appointment Booking",
-          "message": "Please hold on while I transfer you to our appointment booking assistant.",
-          "description": "Transfer the user to the appointment booking assistant after they say their name."
-        }],
-      },
-      {
-        "assistant": {
-          "name": "Appointment Booking",
-        },
+```html
+<script src="https://your-domain.com/path/to/contact-widget.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const widget = ContactWidget.init({
+      // Button and speech bubble customization
+      logoSrc: 'https://your-domain.com/path/to/your-logo.png', // Custom logo for the button
+      speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
+      
+      // Form title and description
+      formTitle: 'Wir rufen Sie zurück', // Heading for the form
+      formDescription: 'Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren.', // Description below the title
+      
+      // Form fields
+      nameLabel: 'Name', // Label for the name field
+      phoneLabel: 'Telefonnummer', // Label for the phone field
+      namePlaceholder: 'Ihr Name', // Placeholder for name input
+      phonePlaceholder: 'Ihre Telefonnummer', // Placeholder for phone input
+      
+      // Button and messages
+      submitText: 'Anruf bekommen', // Text for the submit button
+      successMessage: 'Vielen Dank! Wir werden Sie in Kürze kontaktieren.', // Message shown after form submission
+      
+      // Legal links
+      agbUrl: 'https://your-domain.com/agb', // URL to your terms and conditions
+      datenschutzUrl: 'https://your-domain.com/datenschutz', // URL to your privacy policy
+      
+      // Callbacks
+      onSubmit: function(data) {
+        // Custom callback function for form submission
+        console.log('Form submitted:', data);
+        
+        // data contains: 
+        // - name: The user's name
+        // - phoneNumber: The full phone number in E.164 format (e.g. +491234567890)
+        
+        // You can send the data to your server using fetch or XMLHttpRequest
+        fetch('https://your-api.com/submit-contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+          console.log('Success:', result);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       }
-    ]
-  }
+    });
+  });
+</script>
+```
+
+You can also use data attributes for basic configuration:
+
+```html
+<script 
+  src="https://your-domain.com/path/to/contact-widget.js" 
+  data-contact-widget-auto-init
+  data-logo-src="https://your-domain.com/path/to/your-logo.png"
+  data-speech-bubble-text="Wie darf ich Ihnen helfen?"
+  data-form-title="Wir rufen Sie zurück"
+  data-form-description="Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren."
+  data-name-label="Name"
+  data-phone-label="Telefonnummer"
+  data-name-placeholder="Ihr Name"
+  data-phone-placeholder="Ihre Telefonnummer"
+  data-submit-text="Anruf bekommen"
+  data-success-message="Vielen Dank! Wir werden Sie in Kürze kontaktieren."
+  data-agb-url="https://your-domain.com/agb"
+  data-datenschutz-url="https://your-domain.com/datenschutz"
+></script>
+```
+
+### Speech Bubble Behavior
+
+The speech bubble appears 5 seconds after the widget is loaded and disappears:
+- After 10 seconds automatically
+- When the user clicks anywhere on the page
+- When the user clicks on the widget button to open the form
+
+This creates an engaging but non-intrusive way to invite visitors to interact with the widget.
+
+### Design Customization
+
+The widget uses the Inter font family and a clean, modern design with:
+- A circular light blue (#E1EFFE) button displaying only the Petra logo
+- A friendly speech bubble that appears after 5 seconds
+- Form fields with validation and error messages
+- A compliance text section with legal links
+- Disabled submit button until form validation passes
+- Country code dropdown for phone numbers
+
+If you want to further customize the appearance, you can add custom CSS to your page:
+
+```css
+/* Customize button appearance */
+.contact-widget-btn {
+  background-color: #your-color !important;
+  width: 70px !important;
+  height: 70px !important;
 }
 
-(function (d, t) {
-    var g = document.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-    g.defer = true;
-    g.async = true;
-    s.parentNode.insertBefore(g, s);
+/* Customize logo size */
+.contact-widget-btn img {
+  width: 60px !important;
+  height: 60px !important;
+}
 
-    g.onload = function () {
-      const vapi = window.vapiSDK.run({
-        apiKey: "", // required Use your Public Key
-        squad: squad, // You can pass in squad as an option to create squad.
-        config: buttonConfig // optional
-      });
+/* Customize speech bubble */
+.speech-bubble {
+  background-color: #your-color !important;
+  color: #fff !important;
+}
 
-      if(vapi) {
-        // Extend more using vapi
+.speech-bubble:after {
+  border-color: #your-color transparent !important;
+}
 
-      }
-    };
-  })(document, "script");
+/* Customize form appearance */
+.contact-popup {
+  width: 350px !important;
+}
 
+/* Customize submit button */
+.submit-btn:not(:disabled) {
+  background-color: #your-color !important;
+}
 
-
+/* Customize compliance text */
+.compliance-text a {
+  color: #your-color !important;
+}
 ```
 
+### Validation Features
 
-You can also customise the look and feel of your Vapi Support Button using the following configurations.
-The button will have 3 states, `idle`, `loading` and `active`.
+The widget includes the following validation features:
 
-```js
-const buttonConfig = {
-  position: "bottom-right", // "bottom" | "top" | "left" | "right" | "top-right" | "top-left" | "bottom-left" | "bottom-right"
-  offset: "40px", // decide how far the button should be from the edge
-  width: "50px", // min-width of the button
-  height: "50px", // height of the button
-  idle: {
-    // button state when the call is not active.
-    color: `rgb(93, 254, 202)`,
-    type: "pill", // or "round"
-    title: "Have a quick question?", // only required in case of Pill
-    subtitle: "Talk with our AI assistant", // only required in case of pill
-    icon: `https://unpkg.com/lucide-static@0.321.0/icons/phone.svg`,
-  },
-  loading: {
-    // button state when the call is connecting
-    color: `rgb(93, 124, 202)`,
-    type: "pill", // or "round"
-    title: "Connecting...", // only required in case of Pill
-    subtitle: "Please wait", // only required in case of pill
-    icon: `https://unpkg.com/lucide-static@0.321.0/icons/loader-2.svg`,
-  },
-  active: {
-    // button state when the call is in progress or active.
-    color: `rgb(255, 0, 0)`,
-    type: "pill", // or "round"
-    title: "Call is in progress...", // only required in case of Pill
-    subtitle: "End the call.", // only required in case of pill
-    icon: `https://unpkg.com/lucide-static@0.321.0/icons/phone-off.svg`,
-  },
-};
+1. **Name validation**: Requires at least 2 characters
+2. **Phone number validation**:
+   - Specific rules for each country code
+   - Germany (+49): 10-11 digits
+   - Austria (+43): 9-10 digits
+   - Switzerland (+41): 9 digits
+3. **E.164 format**: Automatically formats the phone number to E.164 standard
+
+The submit button remains disabled until all validations pass.
+
+### API Methods
+
+The widget object returned by `ContactWidget.init()` provides the following methods:
+
+```javascript
+// Show the popup programmatically
+widget.showPopup();
+
+// Hide the popup programmatically
+widget.hidePopup();
+
+// Show the speech bubble programmatically
+widget.showSpeechBubble();
+
+// Hide the speech bubble programmatically
+widget.hideSpeechBubble();
+
+// Update widget configuration
+widget.updateConfig({
+  speechBubbleText: 'New speech bubble text'
+});
 ```
 
-## Configuration
+## Building from Source
 
-You can customize the assistant by modifying the `assistant` object. The `apiKey` should be replaced with your unique key provided by Vapi.
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Build the project: `npm run build`
+4. The built files will be in the `dist` directory
 
-## UI Customization
+## Demo
 
-The SDK exposes several CSS classes that can be targeted for custom styling. Here is a list of the classes you can customize:
+Open the `index.html` file in your browser to see a demo of the contact form widget.
 
-- `.vapi-btn`: The main class for the Vapi button.
-- `.vapi-btn-is-idle`: The class for the Vapi button when the call is disconnected.
-- `.vapi-btn-is-active`: The class for the Vapi button when the call is active.
-- `.vapi-btn-is-loading`: The class for the Vapi button when the call is connecting.
-- `.vapi-btn-is-speaking`: The class for the Vapi button when the bot is speaking.
-- `.vapi-btn-pill`: The class for Vapi button to set pill variant.
-- `.vapi-btn-round`: The class for Vapi button to set round variant.
+## Browser Compatibility
 
-You can add custom styles to these classes to match the look and feel of your website. These are exposed in case u need some more customisations besides the `position`, `color` and `offset` config available currently.
+The contact form widget is compatible with:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Opera (latest)
+- Mobile browsers (iOS Safari, Android Chrome)
 
-## Support
+## License
 
-For any issues or further customization needs, please refer to the [VapiAI Docs](https://docs.vapi.ai) or contact our support team directly.
-
-Enjoy enhancing your website with Vapi, your friendly voice assistant!
+MIT
