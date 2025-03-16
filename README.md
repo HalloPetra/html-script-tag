@@ -7,9 +7,10 @@ A simple, customizable contact form widget that can be embedded on any website. 
 - Lightweight and easy to embed
 - Modern design with Inter font
 - Customizable appearance and text
-- Interactive speech bubble that appears after 5 seconds
+- Interactive speech bubble that appears after 5 seconds and disappears after 30 seconds
 - Country selection for phone numbers (Germany, Austria, Switzerland)
-- Input validation with helpful error messages
+- Input validation with helpful error messages (only shown after form submission)
+- Success screen with "Powered by HalloPetra" attribution
 - Compliance text with customizable links to terms and privacy policy
 - Form description to set clear expectations
 - Responsive and mobile-friendly
@@ -23,7 +24,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 1. Add the script to your HTML file:
 
 ```html
-<script src="https://your-domain.com/path/to/contact-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Initialize the widget with default settings
@@ -37,7 +38,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 You can also auto-initialize the widget by adding a data attribute to the script tag:
 
 ```html
-<script src="https://your-domain.com/path/to/contact-widget.js" data-contact-widget-auto-init></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" data-contact-widget-auto-init></script>
 ```
 
 ### Customization
@@ -45,12 +46,12 @@ You can also auto-initialize the widget by adding a data attribute to the script
 You can customize the widget by passing configuration options:
 
 ```html
-<script src="https://your-domain.com/path/to/contact-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
       // Button and speech bubble customization
-      logoSrc: 'https://your-domain.com/path/to/your-logo.png', // Custom logo for the button
+      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Custom logo for the button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
       
       // Form title and description
@@ -105,9 +106,9 @@ You can also use data attributes for basic configuration:
 
 ```html
 <script 
-  src="https://your-domain.com/path/to/contact-widget.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-logo-src="https://your-domain.com/path/to/your-logo.png"
+  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
   data-form-description="Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren."
@@ -125,18 +126,26 @@ You can also use data attributes for basic configuration:
 ### Speech Bubble Behavior
 
 The speech bubble appears 5 seconds after the widget is loaded and disappears:
-- After 10 seconds automatically
+- After 30 seconds automatically
 - When the user clicks anywhere on the page
 - When the user clicks on the widget button to open the form
 
 This creates an engaging but non-intrusive way to invite visitors to interact with the widget.
+
+### Success Screen
+
+After submitting the form, a success screen is displayed with:
+- A green checkmark icon
+- A thank you message
+- Information that the user will be contacted soon
+- A "Powered by HalloPetra" attribution with a link to the website
 
 ### Design Customization
 
 The widget uses the Inter font family and a clean, modern design with:
 - A circular light blue (#E1EFFE) button displaying only the Petra logo
 - A friendly speech bubble that appears after 5 seconds
-- Form fields with validation and error messages
+- Form fields with validation and error messages (only shown after submission attempt)
 - A compliance text section with legal links
 - Disabled submit button until form validation passes
 - Country code dropdown for phone numbers
@@ -153,18 +162,14 @@ If you want to further customize the appearance, you can add custom CSS to your 
 
 /* Customize logo size */
 .contact-widget-btn img {
-  width: 60px !important;
-  height: 60px !important;
+  width: 65px !important;
+  height: 65px !important;
 }
 
 /* Customize speech bubble */
 .speech-bubble {
   background-color: #your-color !important;
   color: #fff !important;
-}
-
-.speech-bubble:after {
-  border-color: #your-color transparent !important;
 }
 
 /* Customize form appearance */
@@ -174,6 +179,11 @@ If you want to further customize the appearance, you can add custom CSS to your 
 
 /* Customize submit button */
 .submit-btn:not(:disabled) {
+  background-color: #your-color !important;
+}
+
+/* Customize success screen */
+.success-icon {
   background-color: #your-color !important;
 }
 
@@ -195,7 +205,7 @@ The widget includes the following validation features:
    - Switzerland (+41): 9 digits
 3. **E.164 format**: Automatically formats the phone number to E.164 standard
 
-The submit button remains disabled until all validations pass.
+The submit button remains disabled until all validations pass, but error messages are only shown after the user attempts to submit the form.
 
 ### API Methods
 

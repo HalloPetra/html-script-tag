@@ -336,7 +336,7 @@ function createWidgetElements(config) {
 
   // Add logo to container
   const logoImg = document.createElement('img');
-  logoImg.src = config.logoSrc || 'https://cdn.jsdelivr.net/gh/yourusername/contact-widget@latest/assets/logo.png';
+  logoImg.src = config.logoSrc || 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png';
   logoImg.alt = 'Petra';
 
   logoContainer.appendChild(logoImg);

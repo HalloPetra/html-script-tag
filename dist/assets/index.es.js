@@ -311,7 +311,7 @@ function A(e) {
   const a = document.createElement("div");
   a.className = "contact-widget-logo-container";
   const i = document.createElement("img");
-  i.src = e.logoSrc || "https://cdn.jsdelivr.net/gh/yourusername/contact-widget@latest/assets/logo.png", i.alt = "Petra", a.appendChild(i), t.appendChild(a);
+  i.src = e.logoSrc || "https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png", i.alt = "Petra", a.appendChild(i), t.appendChild(a);
   const h = document.createElement("div");
   h.id = "speech-bubble", h.className = "speech-bubble", h.textContent = e.speechBubbleText || "Wie darf ich Ihnen helfen?";
   const l = document.createElement("div");
@@ -369,14 +369,14 @@ function A(e) {
       <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
     </svg>
   `;
-  const M = document.createElement("h3");
-  M.className = "success-title", M.textContent = "Vielen Dank!";
-  const P = document.createElement("p");
-  P.className = "success-message", P.textContent = "Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.";
+  const P = document.createElement("h3");
+  P.className = "success-title", P.textContent = "Vielen Dank!";
+  const M = document.createElement("p");
+  M.className = "success-message", M.textContent = "Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.";
   const z = document.createElement("div");
   z.className = "powered-by";
   const S = document.createElement("a");
-  return S.href = "https://hallopetra.com", S.target = "_blank", S.textContent = "HalloPetra", z.appendChild(document.createTextNode("Bereitgestellt von ")), z.appendChild(S), u.appendChild(I), u.appendChild(M), u.appendChild(P), u.appendChild(z), l.appendChild(g), l.appendChild(b), l.appendChild(u), document.body.appendChild(t), document.body.appendChild(h), document.body.appendChild(l), {
+  return S.href = "https://hallopetra.com", S.target = "_blank", S.textContent = "HalloPetra", z.appendChild(document.createTextNode("Bereitgestellt von ")), z.appendChild(S), u.appendChild(I), u.appendChild(P), u.appendChild(M), u.appendChild(z), l.appendChild(g), l.appendChild(b), l.appendChild(u), document.body.appendChild(t), document.body.appendChild(h), document.body.appendChild(l), {
     widgetBtn: t,
     popup: l,
     closeBtn: g,
