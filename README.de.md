@@ -99,6 +99,9 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
       submitText: 'Anruf bekommen', // Text für den Submit-Button
       successMessage: 'Vielen Dank! Wir werden Sie in Kürze kontaktieren.', // Nachricht nach dem Absenden des Formulars
       
+      // Anruf-Anpassung
+      greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // Die Begrüßung, die der Assistent beim Anruf sagen wird
+      
       // Rechtliche Links
       agbUrl: 'https://ihre-domain.de/agb', // URL zu Ihren AGB
       datenschutzUrl: 'https://ihre-domain.de/datenschutz', // URL zu Ihrer Datenschutzerklärung
@@ -139,6 +142,7 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
   data-phone-placeholder="Ihre Telefonnummer"
   data-submit-text="Anruf bekommen"
   data-success-message="Vielen Dank! Wir werden Sie in Kürze kontaktieren."
+  data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
   data-agb-url="https://ihre-domain.de/agb"
   data-datenschutz-url="https://ihre-domain.de/datenschutz"
 ></script>
@@ -247,7 +251,8 @@ widget.hideSpeechBubble();
 
 // Widget-Konfiguration aktualisieren
 widget.updateConfig({
-  speechBubbleText: 'Neuer Sprechblasentext'
+  speechBubbleText: 'Neuer Sprechblasentext',
+  greetingText: 'Hallo, hier ist Petra von HalloPetra. Sie haben kürzlich über unsere Website um einen Rückruf gebeten.'
 });
 ```
 
@@ -290,7 +295,8 @@ Die Daten werden als JSON-Objekt mit der folgenden Struktur gesendet:
 {
   "companyRecordId": "IHRE_COMPANY_RECORD_ID",
   "name": "Name des Benutzers",
-  "phone": "+491234567890"
+  "phone": "+491234567890",
+  "greetingText": "Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
 }
 ```
 
@@ -298,6 +304,7 @@ Wobei:
 - `companyRecordId` Ihre eindeutige Unternehmenskennung ist (erforderlich)
 - `name` der Name des Benutzers aus dem Formular ist
 - `phone` die vollständige Telefonnummer im E.164-Format ist
+- `greetingText` die Begrüßung, die der Assistent beim Anruf sagen wird
 
 ### Antwortverarbeitung
 Das Widget verarbeitet sowohl erfolgreiche als auch fehlgeschlagene API-Antworten:

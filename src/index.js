@@ -799,7 +799,8 @@ function initWidgetBehavior(elements, config) {
         phone: e164PhoneNumber,
         customerId: config.customerId,
         url: window.location.href, // Include the current page URL
-        userAgent: navigator.userAgent // Include user agent for analytics
+        userAgent: navigator.userAgent, // Include user agent for analytics
+        greetingText: config.greetingText
       }),
       signal: controller.signal
     })
@@ -815,28 +816,6 @@ function initWidgetBehavior(elements, config) {
         // Call the handler function if provided
         if (typeof config.onSubmit === 'function') {
           config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: true });
-        }
-
-        // Update success title if provided in the response
-        if (data && data.successTitle) {
-          const successTitle = successScreen.querySelector('.success-title');
-          if (successTitle) {
-            successTitle.textContent = data.successTitle;
-          }
-        }
-
-        // Update success message if provided in the response
-        if (data && data.successMessage) {
-          const successMessage = successScreen.querySelector('.success-message');
-          if (successMessage) {
-            successMessage.textContent = data.successMessage;
-          }
-        } else if (data && data.message) {
-          // Fallback to 'message' field for backward compatibility
-          const successMessage = successScreen.querySelector('.success-message');
-          if (successMessage) {
-            successMessage.textContent = data.message;
-          }
         }
 
         // Show success screen
@@ -976,7 +955,7 @@ function initContactWidget(config = {}) {
       if (newConfig.speechBubbleText) {
         elements.speechBubble.textContent = newConfig.speechBubbleText;
       }
-      
+
       // Update success title if provided
       if (newConfig.successTitle) {
         const successTitle = elements.successScreen.querySelector('.success-title');
@@ -984,7 +963,7 @@ function initContactWidget(config = {}) {
           successTitle.textContent = newConfig.successTitle;
         }
       }
-      
+
       // Update success message if provided
       if (newConfig.successMessage) {
         const successMessage = elements.successScreen.querySelector('.success-message');
@@ -992,7 +971,12 @@ function initContactWidget(config = {}) {
           successMessage.textContent = newConfig.successMessage;
         }
       }
-      
+
+      // Update greeting text if provided
+      if (newConfig.greetingText) {
+        config.greetingText = newConfig.greetingText;
+      }
+
       // Other updates could be added here
     }
   };
@@ -1014,7 +998,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const configAttributes = [
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId', 'successTitle'
+      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
+      'greetingText'
     ];
 
     configAttributes.forEach(attr => {

@@ -101,6 +101,9 @@ You can customize the widget by passing configuration options:
       successTitle: 'Vielen Dank!', // Title shown on the success screen
       successMessage: 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.', // Message shown on success screen
       
+      // Call customization
+      greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // The greeting the assistant will say when calling
+      
       // Legal links
       agbUrl: 'https://your-domain.com/agb', // URL to your terms and conditions
       datenschutzUrl: 'https://your-domain.com/datenschutz', // URL to your privacy policy
@@ -140,6 +143,7 @@ You can also use data attributes for basic configuration:
   data-submit-text="Anruf bekommen"
   data-success-title="Vielen Dank!"
   data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
+  data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
   data-agb-url="https://your-domain.com/agb"
   data-datenschutz-url="https://your-domain.com/datenschutz"
 ></script>
@@ -158,10 +162,11 @@ The widget automatically sends form data to the HalloPetra API when a user submi
 ```json
 {
   "name": "User's name",
-  "phoneNumber": "+491234567890",
+  "phone": "+491234567890",
   "customerId": "your-customer-id",
   "url": "Current page URL",
-  "userAgent": "Browser user agent"
+  "userAgent": "Browser user agent",
+  "greetingText": "Hello, this is Petra from HalloPetra. You recently requested a call back through our website."
 }
 ```
 
@@ -276,7 +281,8 @@ widget.hideSpeechBubble();
 widget.updateConfig({
   speechBubbleText: 'New speech bubble text',
   successTitle: 'Thank you for your request!',
-  successMessage: 'Our team will contact you shortly.'
+  successMessage: 'Our team will contact you shortly.',
+  greetingText: 'Hello, this is Petra from HalloPetra. You recently requested a call back through our website.'
 });
 ```
 
