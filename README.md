@@ -33,11 +33,15 @@ A simple, customizable contact form widget that can be embedded on any website. 
   });
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the widget with default settings
-    const widget = ContactWidget.init();
+    // Initialize the widget with required customerId
+    const widget = ContactWidget.init({
+      customerId: "your-customer-id" // Required
+    });
   });
 </script>
 ```
+
+**Note**: The `customerId` parameter is required for the widget to function correctly.
 
 ### Auto-initialization
 
@@ -47,22 +51,11 @@ You can also auto-initialize the widget by adding data attributes to the script 
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-company-record-id="YOUR_COMPANY_RECORD_ID"
-  data-api-url="https://your-custom-api.example.com/endpoint"
+  data-customer-id="your-customer-id"
 ></script>
 ```
 
-### Required Configuration
-
-The widget requires the following configuration:
-
-- **companyRecordId**: Your unique company identifier (required)
-  - If not provided, the widget will display an error message
-
-### Optional Configuration
-
-- **apiUrl**: The API endpoint for form submission
-  - Default: `https://api.hallopetra.de/api/web-widget/request-call`
+**Important**: The `data-customer-id` attribute is required. Without it, the widget will display an error message when attempting to submit the form.
 
 ### Customization
 
@@ -81,6 +74,12 @@ You can customize the widget by passing configuration options:
 
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
+      // Required parameters
+      customerId: 'your-customer-id', // Your unique customer ID (required)
+      
+      // API configuration
+      apiUrl: 'https://api.hallopetra.de/api/web-widget/request-call', // API endpoint for call requests
+      
       // Button and speech bubble customization
       logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png', // Custom logo for the button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
@@ -97,7 +96,10 @@ You can customize the widget by passing configuration options:
       
       // Button and messages
       submitText: 'Anruf bekommen', // Text for the submit button
-      successMessage: 'Vielen Dank! Wir werden Sie in Kürze kontaktieren.', // Message shown after form submission
+      
+      // Success screen customization
+      successTitle: 'Vielen Dank!', // Title shown on the success screen
+      successMessage: 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.', // Message shown on success screen
       
       // Legal links
       agbUrl: 'https://your-domain.com/agb', // URL to your terms and conditions
@@ -111,10 +113,8 @@ You can customize the widget by passing configuration options:
         // data contains: 
         // - name: The user's name
         // - phoneNumber: The full phone number in E.164 format (e.g. +491234567890)
-        // - response: The API response data
-        
-        // Note: The widget automatically sends the data to the API endpoint
-        // This callback is executed after successful submission
+        // - success: Boolean indicating if the submission was successful
+        // - error: Error object if success is false
       }
     });
   });
@@ -127,8 +127,8 @@ You can also use data attributes for basic configuration:
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-company-record-id="YOUR_COMPANY_RECORD_ID"
-  data-api-url="https://your-custom-api.example.com/endpoint"
+  data-customer-id="your-customer-id"
+  data-api-url="https://api.hallopetra.de/api/web-widget/request-call"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -138,11 +138,36 @@ You can also use data attributes for basic configuration:
   data-name-placeholder="Ihr Name"
   data-phone-placeholder="Ihre Telefonnummer"
   data-submit-text="Anruf bekommen"
-  data-success-message="Vielen Dank! Wir werden Sie in Kürze kontaktieren."
+  data-success-title="Vielen Dank!"
+  data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-agb-url="https://your-domain.com/agb"
   data-datenschutz-url="https://your-domain.com/datenschutz"
 ></script>
 ```
+
+### Required Parameters
+
+The widget requires the following parameter:
+
+- **customerId**: Your unique customer identifier provided by HalloPetra. Without this parameter, the form submission will fail and display an error message.
+
+### API Integration
+
+The widget automatically sends form data to the HalloPetra API when a user submits the form. The data is sent to `https://api.hallopetra.de/api/web-widget/request-call` with the following payload:
+
+```json
+{
+  "name": "User's name",
+  "phoneNumber": "+491234567890",
+  "customerId": "your-customer-id",
+  "url": "Current page URL",
+  "userAgent": "Browser user agent"
+}
+```
+
+If the submission is successful, the success screen will be displayed. If the API responds with a message, it will be shown in the success screen.
+
+If the submission fails, an error message will be displayed to the user.
 
 ### Speech Bubble Behavior
 
@@ -224,6 +249,8 @@ The widget includes the following validation features:
    - Germany (+49): 10-11 digits
    - Austria (+43): 9-10 digits
    - Switzerland (+41): 9 digits
+   - **Automatic formatting**: Leading zeros and hyphens are automatically removed
+   - Visual feedback when formatting is applied
 3. **E.164 format**: Automatically formats the phone number to E.164 standard
 
 The submit button remains disabled until all validations pass, but error messages are only shown after the user attempts to submit the form.
@@ -247,7 +274,9 @@ widget.hideSpeechBubble();
 
 // Update widget configuration
 widget.updateConfig({
-  speechBubbleText: 'New speech bubble text'
+  speechBubbleText: 'New speech bubble text',
+  successTitle: 'Thank you for your request!',
+  successMessage: 'Our team will contact you shortly.'
 });
 ```
 
@@ -271,6 +300,18 @@ The contact form widget is compatible with:
 - Edge (latest)
 - Opera (latest)
 - Mobile browsers (iOS Safari, Android Chrome)
+
+## Testing
+
+To test if your widget is properly configured:
+
+1. Make sure you've included your `customerId` in the configuration
+2. Click the widget button to open the form
+3. Fill in a valid name and phone number
+4. Submit the form
+5. You should see the success screen if everything is configured correctly
+
+If you see an error message about a missing customer ID, check that you've included the `customerId` parameter in your configuration or the `data-customer-id` attribute in your script tag.
 
 ## License
 

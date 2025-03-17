@@ -367,7 +367,7 @@ function createWidgetElements(config) {
 
   // Create form heading
   const heading = document.createElement('h3');
-  heading.textContent = config.formTitle || 'Wir rufen Sie zurück';
+  heading.textContent = config.formTitle || 'Wir werden rufen Sie zurück';
 
   // Create form description
   const description = document.createElement('p');
@@ -513,12 +513,12 @@ function createWidgetElements(config) {
   // Create success title
   const successTitle = document.createElement('h3');
   successTitle.className = 'success-title';
-  successTitle.textContent = 'Vielen Dank!';
+  successTitle.textContent = config.successTitle || 'Vielen Dank!';
 
   // Create success message
   const successMessage = document.createElement('p');
   successMessage.className = 'success-message';
-  successMessage.textContent = 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.';
+  successMessage.textContent = config.successMessage || 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.';
 
   // Create powered by text
   const poweredBy = document.createElement('div');
@@ -648,8 +648,19 @@ function initWidgetBehavior(elements, config) {
     const phoneNumber = phoneInput.value.trim();
     const phoneErrorMsg = phoneGroup.querySelector('.error-message');
 
-    // Remove any non-digit characters
-    const digitsOnly = phoneNumber.replace(/\D/g, '');
+    // Format the phone number - remove hyphens and spaces
+    let formattedNumber = phoneNumber.replace(/[\s-]/g, '');
+
+    // Remove leading zero if present (common for local phone number format)
+    if (formattedNumber.startsWith('0')) {
+      formattedNumber = formattedNumber.substring(1);
+
+      // Update the input field to show the formatted number without the leading zero
+      phoneInput.value = formattedNumber;
+    }
+
+    // Remove any non-digit characters for validation
+    const digitsOnly = formattedNumber.replace(/\D/g, '');
 
     // Basic validation based on country code
     let isValid = false;
@@ -680,6 +691,42 @@ function initWidgetBehavior(elements, config) {
     }
   }
 
+  // Add function to format phone number on input
+  function formatPhoneNumber() {
+    let value = phoneInput.value;
+    const originalValue = value;
+
+    // Remove spaces and hyphens
+    value = value.replace(/[\s-]/g, '');
+
+    // Remove leading zero if present
+    if (value.startsWith('0')) {
+      value = value.substring(1);
+    }
+
+    // If the value changed, update the input and show visual feedback
+    if (value !== originalValue && value.length > 0) {
+      // Update the input with the formatted value
+      phoneInput.value = value;
+
+      // Add a brief highlight effect to show the user the value was changed
+      const originalBackgroundColor = phoneInput.style.backgroundColor;
+      const originalTransition = phoneInput.style.transition;
+
+      phoneInput.style.transition = 'background-color 0.5s ease';
+      phoneInput.style.backgroundColor = '#eef7ff'; // Light blue highlight
+
+      setTimeout(() => {
+        phoneInput.style.backgroundColor = originalBackgroundColor;
+        setTimeout(() => {
+          phoneInput.style.transition = originalTransition;
+        }, 500);
+      }, 500);
+    }
+
+    return value;
+  }
+
   // Update submit button state based on form validity
   function updateSubmitButtonState() {
     const isNameValid = validateName();
@@ -690,7 +737,13 @@ function initWidgetBehavior(elements, config) {
 
   // Add input event listeners for validation
   nameInput.addEventListener('input', updateSubmitButtonState);
-  phoneInput.addEventListener('input', updateSubmitButtonState);
+
+  // Add both formatting and validation for phone input
+  phoneInput.addEventListener('input', function () {
+    formatPhoneNumber();
+    updateSubmitButtonState();
+  });
+
   countrySelect.addEventListener('change', updateSubmitButtonState);
 
   // Handle form submission
@@ -700,6 +753,9 @@ function initWidgetBehavior(elements, config) {
     // Set formSubmitted to true
     formSubmitted = true;
 
+    // Format phone number one more time to ensure it's correct
+    formatPhoneNumber();
+
     // Run validation with visual feedback
     const isNameValid = validateName();
     const isPhoneValid = validatePhone();
@@ -708,40 +764,79 @@ function initWidgetBehavior(elements, config) {
       return;
     }
 
+    // Check if customerId is provided
+    if (!config.customerId) {
+      // Show error in UI
+      const phoneErrorMsg = phoneGroup.querySelector('.error-message');
+      phoneGroup.classList.add('invalid');
+      phoneErrorMsg.textContent = 'Konfigurationsfehler: Keine Kunden-ID vorhanden.';
+      console.error('ContactWidget: customerId is required but was not provided in the configuration');
+      return;
+    }
+
     const name = nameInput.value.trim();
     const countryCode = countrySelect.value;
     const phoneNumber = phoneInput.value.trim().replace(/\D/g, '');
 
-    // Format phone number in E.164 format
+    // Format phone number in E.164 format (country code + number without leading zero)
     const e164PhoneNumber = `${countryCode}${phoneNumber}`;
 
-    // Prepare data for API submission
-    const formData = {
-      companyId: config.companyId || 'default',
-      name: name,
-      phone: e164PhoneNumber
-    };
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Wird gesendet...';
 
-    // Send data to the specified API endpoint
-    fetch('https://martin-desired-ringtail.ngrok-free.app', {
+    // Send data to server
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    fetch(config.apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        name: name,
+        phone: e164PhoneNumber,
+        customerId: config.customerId,
+        url: window.location.href, // Include the current page URL
+        userAgent: navigator.userAgent // Include user agent for analytics
+      }),
+      signal: controller.signal
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Server responded with an error');
         }
         return response.json();
       })
       .then(data => {
-        console.log('Success:', data);
+        console.log('Call request successfully sent to server:', data);
 
         // Call the handler function if provided
         if (typeof config.onSubmit === 'function') {
-          config.onSubmit({ name, phoneNumber: e164PhoneNumber, response: data });
+          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: true });
+        }
+
+        // Update success title if provided in the response
+        if (data && data.successTitle) {
+          const successTitle = successScreen.querySelector('.success-title');
+          if (successTitle) {
+            successTitle.textContent = data.successTitle;
+          }
+        }
+
+        // Update success message if provided in the response
+        if (data && data.successMessage) {
+          const successMessage = successScreen.querySelector('.success-message');
+          if (successMessage) {
+            successMessage.textContent = data.successMessage;
+          }
+        } else if (data && data.message) {
+          // Fallback to 'message' field for backward compatibility
+          const successMessage = successScreen.querySelector('.success-message');
+          if (successMessage) {
+            successMessage.textContent = data.message;
+          }
         }
 
         // Show success screen
@@ -749,18 +844,31 @@ function initWidgetBehavior(elements, config) {
         successScreen.style.display = 'block';
       })
       .catch(error => {
-        console.error('Error submitting form:', error);
+        console.error('Error sending call request:', error);
 
-        // Optional: Implement error handling UI here
-        // For now, still show success screen to avoid disrupting user experience
-        contactFormContainer.style.display = 'none';
-        successScreen.style.display = 'block';
+        // Call the handler function if provided
+        if (typeof config.onSubmit === 'function') {
+          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: false, error });
+        }
+
+        // Show error in UI
+        const phoneErrorMsg = phoneGroup.querySelector('.error-message');
+        phoneGroup.classList.add('invalid');
+        phoneErrorMsg.textContent = 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = config.submitText || 'Anruf bekommen';
+
+        // Reset form state but keep the popup open if there was an error
+        formSubmitted = false;
+        if (successScreen.style.display === 'block') {
+          form.reset();
+          updateSubmitButtonState();
+        }
       });
-
-    // Reset form state but keep the popup open with success screen
-    formSubmitted = false;
-    form.reset();
-    updateSubmitButtonState();
   });
 
   // Initial validation check
@@ -769,11 +877,76 @@ function initWidgetBehavior(elements, config) {
 
 // Initialize the contact widget
 function initContactWidget(config = {}) {
+  // Set default API URL if not provided
+  config.apiUrl = config.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+
+  // Check if customerId is provided
+  const missingCustomerId = !config.customerId;
+  // if (missingCustomerId) {
+  //   console.error('ContactWidget: customerId is required but was not provided in the configuration');
+
+  //   // Create and display warning banner
+  //   const warningBanner = document.createElement('div');
+  //   warningBanner.style.position = 'fixed';
+  //   warningBanner.style.bottom = '20px';
+  //   warningBanner.style.right = '20px';
+  //   warningBanner.style.backgroundColor = '#FEF2F2';
+  //   warningBanner.style.color = '#B91C1C';
+  //   warningBanner.style.padding = '10px 15px';
+  //   warningBanner.style.borderRadius = '8px';
+  //   warningBanner.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+  //   warningBanner.style.zIndex = '10000';
+  //   warningBanner.style.fontFamily = 'Inter, sans-serif';
+  //   warningBanner.style.fontSize = '14px';
+  //   warningBanner.style.fontWeight = '500';
+  //   warningBanner.style.maxWidth = '300px';
+  //   warningBanner.textContent = 'ContactWidget Error: Missing customerId. Widget will not function correctly.';
+
+  //   // Only add if in development environment
+  //   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  //     document.body.appendChild(warningBanner);
+
+  //     // Remove the banner after 10 seconds
+  //     setTimeout(() => {
+  //       if (document.body.contains(warningBanner)) {
+  //         document.body.removeChild(warningBanner);
+  //       }
+  //     }, 10000);
+  //   }
+  // }
+
   // Inject CSS
   injectStyles();
 
   // Create widget elements
   const elements = createWidgetElements(config);
+
+  // Add missing customerId warning to the form if needed
+  if (missingCustomerId) {
+    const contactFormContainer = elements.contactFormContainer;
+    const form = elements.form;
+
+    // Create a warning element
+    const warningElement = document.createElement('div');
+    warningElement.style.backgroundColor = '#FEF2F2';
+    warningElement.style.color = '#B91C1C';
+    warningElement.style.padding = '10px';
+    warningElement.style.borderRadius = '8px';
+    warningElement.style.margin = '0 0 16px 0';
+    warningElement.style.fontSize = '14px';
+    warningElement.style.fontWeight = '500';
+    warningElement.style.textAlign = 'center';
+    warningElement.textContent = 'Konfigurationsfehler: Keine Kunden-ID vorhanden.';
+
+    // Insert it at the top of the form
+    contactFormContainer.insertBefore(warningElement, contactFormContainer.firstChild);
+
+    // Disable form submission
+    form.onsubmit = function (e) {
+      e.preventDefault();
+      return false;
+    };
+  }
 
   // Initialize behavior
   initWidgetBehavior(elements, config);
@@ -803,6 +976,23 @@ function initContactWidget(config = {}) {
       if (newConfig.speechBubbleText) {
         elements.speechBubble.textContent = newConfig.speechBubbleText;
       }
+      
+      // Update success title if provided
+      if (newConfig.successTitle) {
+        const successTitle = elements.successScreen.querySelector('.success-title');
+        if (successTitle) {
+          successTitle.textContent = newConfig.successTitle;
+        }
+      }
+      
+      // Update success message if provided
+      if (newConfig.successMessage) {
+        const successMessage = elements.successScreen.querySelector('.success-message');
+        if (successMessage) {
+          successMessage.textContent = newConfig.successMessage;
+        }
+      }
+      
       // Other updates could be added here
     }
   };
@@ -824,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const configAttributes = [
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'companyId'
+      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId', 'successTitle'
     ];
 
     configAttributes.forEach(attr => {
