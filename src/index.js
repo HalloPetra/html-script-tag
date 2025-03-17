@@ -1,5 +1,16 @@
 // Contact Form Widget - Embeddable script
 
+// Initialize config object with defaults
+window.contactWidgetConfig = window.contactWidgetConfig || {};
+
+// Set default API URL if not specified
+window.contactWidgetConfig.apiUrl = window.contactWidgetConfig.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+
+// Function to configure the widget
+window.configureContactWidget = function (config) {
+  window.contactWidgetConfig = { ...window.contactWidgetConfig, ...config };
+};
+
 // Create and inject CSS styles
 function injectStyles() {
   // Add Inter font
@@ -717,13 +728,39 @@ function initWidgetBehavior(elements, config) {
 
     // Prepare data for API submission
     const formData = {
-      companyId: config.companyId || 'default',
+      companyRecordId: window.contactWidgetConfig?.companyRecordId || config.companyRecordId,
       name: name,
       phone: e164PhoneNumber
     };
 
-    // Send data to the specified API endpoint
-    fetch('https://martin-desired-ringtail.ngrok-free.app', {
+    // Check if companyRecordId is set
+    if (!formData.companyRecordId) {
+      console.error('Error: companyRecordId is not set. Please configure the widget with a valid companyRecordId.');
+
+      // Show error message to the user
+      contactFormContainer.style.display = 'none';
+      successScreen.style.display = 'block';
+
+      // Update success screen to show error
+      const successTitle = successScreen.querySelector('.success-title');
+      const successMessage = successScreen.querySelector('.success-message');
+      const successIcon = successScreen.querySelector('.success-icon svg');
+
+      // Change success screen to error screen
+      successTitle.textContent = 'Konfigurationsfehler';
+      successMessage.textContent = 'Das Widget wurde nicht korrekt konfiguriert. Bitte kontaktieren Sie den Website-Administrator.';
+      successIcon.innerHTML = '<path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />';
+      successIcon.parentElement.style.backgroundColor = '#FEE2E2';
+      successIcon.style.color = '#EF4444';
+
+      return;
+    }
+
+    // Get the API URL from config or use default
+    const apiUrl = window.contactWidgetConfig?.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+
+    // Send data to the configured API endpoint
+    fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -775,66 +812,51 @@ function initContactWidget(config = {}) {
   // Create widget elements
   const elements = createWidgetElements(config);
 
-  // Initialize behavior
+  // Initialize widget behavior
   initWidgetBehavior(elements, config);
 
-  // Return widget controller with public methods
+  // Return API for programmatic control
   return {
-    // Show the popup programmatically
-    showPopup: () => {
+    showPopup: function () {
       elements.popup.style.display = 'block';
-      elements.speechBubble.classList.remove('show');
     },
-    // Hide the popup programmatically
-    hidePopup: () => {
+    hidePopup: function () {
       elements.popup.style.display = 'none';
     },
-    // Show speech bubble programmatically
-    showSpeechBubble: () => {
+    showSpeechBubble: function () {
       elements.speechBubble.classList.add('show');
     },
-    // Hide speech bubble programmatically
-    hideSpeechBubble: () => {
+    hideSpeechBubble: function () {
       elements.speechBubble.classList.remove('show');
     },
-    // Update widget configuration
-    updateConfig: (newConfig) => {
-      // Update speech bubble text if provided
-      if (newConfig.speechBubbleText) {
-        elements.speechBubble.textContent = newConfig.speechBubbleText;
-      }
-      // Other updates could be added here
+    updateConfig: function (newConfig) {
+      Object.assign(config, newConfig);
     }
   };
 }
 
-// Expose the widget to the global scope
-window.ContactWidget = {
+// Check for data attributes in script tag for auto-initialization
+document.addEventListener('DOMContentLoaded', function () {
+  const scriptTags = document.querySelectorAll('script[src*="contact-widget"]');
+  scriptTags.forEach(script => {
+    if (script.hasAttribute('data-contact-widget-auto-init')) {
+      // Read configuration from data attributes
+      if (script.hasAttribute('data-company-record-id')) {
+        window.contactWidgetConfig.companyRecordId = script.getAttribute('data-company-record-id');
+      }
+
+      // Read API URL from data attributes
+      if (script.hasAttribute('data-api-url')) {
+        window.contactWidgetConfig.apiUrl = script.getAttribute('data-api-url');
+      }
+
+      // Initialize widget if auto-init is enabled
+      initContactWidget();
+    }
+  });
+});
+
+// Export
+export default {
   init: initContactWidget
 };
-
-// Auto-initialize if the script has data-auto-init attribute
-document.addEventListener('DOMContentLoaded', () => {
-  const scriptTag = document.querySelector('script[data-contact-widget-auto-init]');
-  if (scriptTag) {
-    // Get configuration from data attributes if available
-    const config = {};
-
-    // Common configuration attributes
-    const configAttributes = [
-      'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
-      'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'companyId'
-    ];
-
-    configAttributes.forEach(attr => {
-      const dataAttr = `data-${attr.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
-      if (scriptTag.hasAttribute(dataAttr)) {
-        config[attr] = scriptTag.getAttribute(dataAttr);
-      }
-    });
-
-    // Initialize with configuration from data attributes
-    initContactWidget(config);
-  }
-});
