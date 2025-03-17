@@ -708,6 +708,16 @@ function initWidgetBehavior(elements, config) {
       return;
     }
 
+    // Check if customerId is provided
+    if (!config.customerId) {
+      // Show error in UI
+      const phoneErrorMsg = phoneGroup.querySelector('.error-message');
+      phoneGroup.classList.add('invalid');
+      phoneErrorMsg.textContent = 'Konfigurationsfehler: Keine Kunden-ID vorhanden.';
+      console.error('ContactWidget: customerId is required but was not provided in the configuration');
+      return;
+    }
+
     const name = nameInput.value.trim();
     const countryCode = countrySelect.value;
     const phoneNumber = phoneInput.value.trim().replace(/\D/g, '');
@@ -715,22 +725,80 @@ function initWidgetBehavior(elements, config) {
     // Format phone number in E.164 format
     const e164PhoneNumber = `${countryCode}${phoneNumber}`;
 
-    // Call the handler function if provided
-    if (typeof config.onSubmit === 'function') {
-      config.onSubmit({ name, phoneNumber: e164PhoneNumber });
-    }
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Wird gesendet...';
 
-    // Default behavior - log to console
-    console.log('Call request submitted:', { name, phoneNumber: e164PhoneNumber });
+    // Send data to server
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-    // Show success screen
-    contactFormContainer.style.display = 'none';
-    successScreen.style.display = 'block';
+    fetch(config.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: e164PhoneNumber,
+        customerId: config.customerId,
+        url: window.location.href, // Include the current page URL
+        userAgent: navigator.userAgent // Include user agent for analytics
+      }),
+      signal: controller.signal
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server responded with an error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Call request successfully sent to server:', data);
 
-    // Reset form state but keep the popup open with success screen
-    formSubmitted = false;
-    form.reset();
-    updateSubmitButtonState();
+        // Call the handler function if provided
+        if (typeof config.onSubmit === 'function') {
+          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: true });
+        }
+
+        // Update success message if provided in the response
+        if (data && data.message) {
+          const successMessage = successScreen.querySelector('.success-message');
+          if (successMessage) {
+            successMessage.textContent = data.message;
+          }
+        }
+
+        // Show success screen
+        contactFormContainer.style.display = 'none';
+        successScreen.style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error sending call request:', error);
+
+        // Call the handler function if provided
+        if (typeof config.onSubmit === 'function') {
+          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: false, error });
+        }
+
+        // Show error in UI
+        const phoneErrorMsg = phoneGroup.querySelector('.error-message');
+        phoneGroup.classList.add('invalid');
+        phoneErrorMsg.textContent = 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = config.submitText || 'Anruf bekommen';
+
+        // Reset form state but keep the popup open if there was an error
+        formSubmitted = false;
+        if (successScreen.style.display === 'block') {
+          form.reset();
+          updateSubmitButtonState();
+        }
+      });
   });
 
   // Initial validation check
@@ -739,11 +807,76 @@ function initWidgetBehavior(elements, config) {
 
 // Initialize the contact widget
 function initContactWidget(config = {}) {
+  // Set default API URL if not provided
+  config.apiUrl = config.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+
+  // Check if customerId is provided
+  const missingCustomerId = !config.customerId;
+  if (missingCustomerId) {
+    console.error('ContactWidget: customerId is required but was not provided in the configuration');
+
+    // Create and display warning banner
+    const warningBanner = document.createElement('div');
+    warningBanner.style.position = 'fixed';
+    warningBanner.style.bottom = '20px';
+    warningBanner.style.right = '20px';
+    warningBanner.style.backgroundColor = '#FEF2F2';
+    warningBanner.style.color = '#B91C1C';
+    warningBanner.style.padding = '10px 15px';
+    warningBanner.style.borderRadius = '8px';
+    warningBanner.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+    warningBanner.style.zIndex = '10000';
+    warningBanner.style.fontFamily = 'Inter, sans-serif';
+    warningBanner.style.fontSize = '14px';
+    warningBanner.style.fontWeight = '500';
+    warningBanner.style.maxWidth = '300px';
+    warningBanner.textContent = 'ContactWidget Error: Missing customerId. Widget will not function correctly.';
+
+    // Only add if in development environment
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      document.body.appendChild(warningBanner);
+
+      // Remove the banner after 10 seconds
+      setTimeout(() => {
+        if (document.body.contains(warningBanner)) {
+          document.body.removeChild(warningBanner);
+        }
+      }, 10000);
+    }
+  }
+
   // Inject CSS
   injectStyles();
 
   // Create widget elements
   const elements = createWidgetElements(config);
+
+  // Add missing customerId warning to the form if needed
+  if (missingCustomerId) {
+    const contactFormContainer = elements.contactFormContainer;
+    const form = elements.form;
+
+    // Create a warning element
+    const warningElement = document.createElement('div');
+    warningElement.style.backgroundColor = '#FEF2F2';
+    warningElement.style.color = '#B91C1C';
+    warningElement.style.padding = '10px';
+    warningElement.style.borderRadius = '8px';
+    warningElement.style.margin = '0 0 16px 0';
+    warningElement.style.fontSize = '14px';
+    warningElement.style.fontWeight = '500';
+    warningElement.style.textAlign = 'center';
+    warningElement.textContent = 'Konfigurationsfehler: Keine Kunden-ID vorhanden.';
+
+    // Insert it at the top of the form
+    contactFormContainer.insertBefore(warningElement, contactFormContainer.firstChild);
+
+    // Disable form submission
+    form.onsubmit = function (e) {
+      e.preventDefault();
+      return false;
+    };
+  }
 
   // Initialize behavior
   initWidgetBehavior(elements, config);
@@ -794,7 +927,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const configAttributes = [
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText'
+      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId'
     ];
 
     configAttributes.forEach(attr => {

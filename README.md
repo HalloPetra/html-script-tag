@@ -27,19 +27,29 @@ A simple, customizable contact form widget that can be embedded on any website. 
 <script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the widget with default settings
-    const widget = ContactWidget.init();
+    // Initialize the widget with required customerId
+    const widget = ContactWidget.init({
+      customerId: "your-customer-id" // Required
+    });
   });
 </script>
 ```
+
+**Note**: The `customerId` parameter is required for the widget to function correctly.
 
 ### Auto-initialization
 
 You can also auto-initialize the widget by adding a data attribute to the script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" data-contact-widget-auto-init></script>
+<script 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  data-contact-widget-auto-init
+  data-customer-id="your-customer-id"
+></script>
 ```
+
+**Important**: The `data-customer-id` attribute is required. Without it, the widget will display an error message when attempting to submit the form.
 
 ### Customization
 
@@ -50,6 +60,12 @@ You can customize the widget by passing configuration options:
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
+      // Required parameters
+      customerId: 'your-customer-id', // Your unique customer ID (required)
+      
+      // API configuration
+      apiUrl: 'https://api.hallopetra.de/api/web-widget/request-call', // API endpoint for call requests
+      
       // Button and speech bubble customization
       logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png', // Custom logo for the button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
@@ -80,22 +96,8 @@ You can customize the widget by passing configuration options:
         // data contains: 
         // - name: The user's name
         // - phoneNumber: The full phone number in E.164 format (e.g. +491234567890)
-        
-        // You can send the data to your server using fetch or XMLHttpRequest
-        fetch('https://your-api.com/submit-contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(result => {
-          console.log('Success:', result);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+        // - success: Boolean indicating if the submission was successful
+        // - error: Error object if success is false
       }
     });
   });
@@ -108,6 +110,8 @@ You can also use data attributes for basic configuration:
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
+  data-customer-id="your-customer-id"
+  data-api-url="https://api.hallopetra.de/api/web-widget/request-call"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -122,6 +126,30 @@ You can also use data attributes for basic configuration:
   data-datenschutz-url="https://your-domain.com/datenschutz"
 ></script>
 ```
+
+### Required Parameters
+
+The widget requires the following parameter:
+
+- **customerId**: Your unique customer identifier provided by HalloPetra. Without this parameter, the form submission will fail and display an error message.
+
+### API Integration
+
+The widget automatically sends form data to the HalloPetra API when a user submits the form. The data is sent to `https://api.hallopetra.de/api/web-widget/request-call` with the following payload:
+
+```json
+{
+  "name": "User's name",
+  "phoneNumber": "+491234567890",
+  "customerId": "your-customer-id",
+  "url": "Current page URL",
+  "userAgent": "Browser user agent"
+}
+```
+
+If the submission is successful, the success screen will be displayed. If the API responds with a message, it will be shown in the success screen.
+
+If the submission fails, an error message will be displayed to the user.
 
 ### Speech Bubble Behavior
 
@@ -250,6 +278,18 @@ The contact form widget is compatible with:
 - Edge (latest)
 - Opera (latest)
 - Mobile browsers (iOS Safari, Android Chrome)
+
+## Testing
+
+To test if your widget is properly configured:
+
+1. Make sure you've included your `customerId` in the configuration
+2. Click the widget button to open the form
+3. Fill in a valid name and phone number
+4. Submit the form
+5. You should see the success screen if everything is configured correctly
+
+If you see an error message about a missing customer ID, check that you've included the `customerId` parameter in your configuration or the `data-customer-id` attribute in your script tag.
 
 ## License
 

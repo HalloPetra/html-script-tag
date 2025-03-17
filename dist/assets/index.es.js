@@ -1,12 +1,12 @@
-function D() {
-  const e = document.createElement("link");
-  e.rel = "preconnect", e.href = "https://fonts.googleapis.com";
+function A() {
   const t = document.createElement("link");
-  t.rel = "preconnect", t.href = "https://fonts.gstatic.com", t.crossOrigin = "anonymous";
-  const a = document.createElement("link");
-  a.rel = "stylesheet", a.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", document.head.appendChild(e), document.head.appendChild(t), document.head.appendChild(a);
-  const i = document.createElement("style");
-  i.innerHTML = `
+  t.rel = "preconnect", t.href = "https://fonts.googleapis.com";
+  const n = document.createElement("link");
+  n.rel = "preconnect", n.href = "https://fonts.gstatic.com", n.crossOrigin = "anonymous";
+  const s = document.createElement("link");
+  s.rel = "stylesheet", s.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", document.head.appendChild(t), document.head.appendChild(n), document.head.appendChild(s);
+  const e = document.createElement("style");
+  e.innerHTML = `
     .contact-widget-btn {
       position: fixed;
       bottom: 20px;
@@ -303,181 +303,234 @@ function D() {
     .powered-by a:hover {
       text-decoration: underline;
     }
-  `, document.head.appendChild(i);
+  `, document.head.appendChild(e);
 }
-function A(e) {
-  const t = document.createElement("button");
-  t.id = "contact-widget-btn", t.className = "contact-widget-btn";
-  const a = document.createElement("div");
-  a.className = "contact-widget-logo-container";
-  const i = document.createElement("img");
-  i.src = e.logoSrc || "https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png", i.alt = "Petra", a.appendChild(i), t.appendChild(a);
-  const h = document.createElement("div");
-  h.id = "speech-bubble", h.className = "speech-bubble", h.textContent = e.speechBubbleText || "Wie darf ich Ihnen helfen?";
-  const l = document.createElement("div");
-  l.id = "contact-popup", l.className = "contact-popup";
-  const g = document.createElement("button");
-  g.id = "close-popup", g.className = "close-btn", g.textContent = "×";
-  const b = document.createElement("div");
-  b.id = "contact-form-container";
-  const E = document.createElement("h3");
-  E.textContent = e.formTitle || "Wir werden rufen Sie zurück";
-  const k = document.createElement("p");
-  k.className = "contact-popup-description", k.textContent = e.formDescription || "Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren.";
-  const d = document.createElement("form");
-  d.id = "contact-form";
+function P(t) {
+  const n = document.createElement("button");
+  n.id = "contact-widget-btn", n.className = "contact-widget-btn";
+  const s = document.createElement("div");
+  s.className = "contact-widget-logo-container";
+  const e = document.createElement("img");
+  e.src = t.logoSrc || "https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png", e.alt = "Petra", s.appendChild(e), n.appendChild(s);
   const p = document.createElement("div");
-  p.className = "form-group", p.id = "name-group";
-  const y = document.createElement("label");
-  y.htmlFor = "name", y.textContent = e.nameLabel || "Name";
-  const f = document.createElement("input");
-  f.type = "text", f.id = "name", f.name = "name", f.placeholder = e.namePlaceholder || "Ihr Name", f.required = !0;
-  const L = document.createElement("div");
-  L.className = "error-message", p.appendChild(y), p.appendChild(f), p.appendChild(L);
-  const r = document.createElement("div");
-  r.className = "form-group", r.id = "phone-group";
-  const N = document.createElement("label");
-  N.htmlFor = "phone", N.textContent = e.phoneLabel || "Telefonnummer";
-  const C = document.createElement("div");
-  C.className = "phone-input-container";
-  const w = document.createElement("select");
-  w.id = "country-code", w.className = "country-select", [
+  p.id = "speech-bubble", p.className = "speech-bubble", p.textContent = t.speechBubbleText || "Wie darf ich Ihnen helfen?";
+  const o = document.createElement("div");
+  o.id = "contact-popup", o.className = "contact-popup";
+  const h = document.createElement("button");
+  h.id = "close-popup", h.className = "close-btn", h.textContent = "×";
+  const g = document.createElement("div");
+  g.id = "contact-form-container";
+  const N = document.createElement("h3");
+  N.textContent = t.formTitle || "Wir werden rufen Sie zurück";
+  const y = document.createElement("p");
+  y.className = "contact-popup-description", y.textContent = t.formDescription || "Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren.";
+  const b = document.createElement("form");
+  b.id = "contact-form";
+  const a = document.createElement("div");
+  a.className = "form-group", a.id = "name-group";
+  const v = document.createElement("label");
+  v.htmlFor = "name", v.textContent = t.nameLabel || "Name";
+  const x = document.createElement("input");
+  x.type = "text", x.id = "name", x.name = "name", x.placeholder = t.namePlaceholder || "Ihr Name", x.required = !0;
+  const k = document.createElement("div");
+  k.className = "error-message", a.appendChild(v), a.appendChild(x), a.appendChild(k);
+  const d = document.createElement("div");
+  d.className = "form-group", d.id = "phone-group";
+  const I = document.createElement("label");
+  I.htmlFor = "phone", I.textContent = t.phoneLabel || "Telefonnummer";
+  const S = document.createElement("div");
+  S.className = "phone-input-container";
+  const E = document.createElement("select");
+  E.id = "country-code", E.className = "country-select", [
     { code: "+49", emoji: "🇩🇪", name: "Deutschland" },
     { code: "+43", emoji: "🇦🇹", name: "Österreich" },
     { code: "+41", emoji: "🇨🇭", name: "Schweiz" }
-  ].forEach((B) => {
-    const T = document.createElement("option");
-    T.value = B.code, T.textContent = `${B.emoji} ${B.code}`, T.title = B.name, w.appendChild(T);
+  ].forEach((F) => {
+    const M = document.createElement("option");
+    M.value = F.code, M.textContent = `${F.emoji} ${F.code}`, M.title = F.name, E.appendChild(M);
   });
-  const n = document.createElement("input");
-  n.type = "tel", n.id = "phone", n.name = "phone", n.placeholder = e.phonePlaceholder || "Ihre Telefonnummer", n.className = "phone-input", n.required = !0;
-  const m = document.createElement("div");
-  m.className = "error-message", C.appendChild(w), C.appendChild(n), r.appendChild(N), r.appendChild(C), r.appendChild(m);
-  const c = document.createElement("div");
-  c.className = "compliance-text";
-  const s = document.createElement("a");
-  s.href = e.agbUrl || "https://example.com/agb", s.target = "_blank", s.textContent = "AGB";
-  const x = document.createElement("a");
-  x.href = e.datenschutzUrl || "https://example.com/datenschutz", x.target = "_blank", x.textContent = "Datenschutzbedingungen", c.innerHTML = "Mit dem Absenden stimmen Sie unseren ", c.appendChild(s), c.appendChild(document.createTextNode(" und ")), c.appendChild(x), c.appendChild(document.createTextNode(" zu."));
-  const o = document.createElement("button");
-  o.type = "submit", o.className = "submit-btn", o.id = "submit-btn", o.textContent = e.submitText || "Anruf bekommen", o.disabled = !0, d.appendChild(p), d.appendChild(r), d.appendChild(c), d.appendChild(o), b.appendChild(E), b.appendChild(k), b.appendChild(d);
+  const r = document.createElement("input");
+  r.type = "tel", r.id = "phone", r.name = "phone", r.placeholder = t.phonePlaceholder || "Ihre Telefonnummer", r.className = "phone-input", r.required = !0;
+  const f = document.createElement("div");
+  f.className = "error-message", S.appendChild(E), S.appendChild(r), d.appendChild(I), d.appendChild(S), d.appendChild(f);
   const u = document.createElement("div");
-  u.id = "success-screen", u.className = "success-screen";
-  const I = document.createElement("div");
-  I.className = "success-icon", I.innerHTML = `
+  u.className = "compliance-text";
+  const c = document.createElement("a");
+  c.href = t.agbUrl || "https://example.com/agb", c.target = "_blank", c.textContent = "AGB";
+  const C = document.createElement("a");
+  C.href = t.datenschutzUrl || "https://example.com/datenschutz", C.target = "_blank", C.textContent = "Datenschutzbedingungen", u.innerHTML = "Mit dem Absenden stimmen Sie unseren ", u.appendChild(c), u.appendChild(document.createTextNode(" und ")), u.appendChild(C), u.appendChild(document.createTextNode(" zu."));
+  const l = document.createElement("button");
+  l.type = "submit", l.className = "submit-btn", l.id = "submit-btn", l.textContent = t.submitText || "Anruf bekommen", l.disabled = !0, b.appendChild(a), b.appendChild(d), b.appendChild(u), b.appendChild(l), g.appendChild(N), g.appendChild(y), g.appendChild(b);
+  const m = document.createElement("div");
+  m.id = "success-screen", m.className = "success-screen";
+  const B = document.createElement("div");
+  B.className = "success-icon", B.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
       <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
     </svg>
   `;
-  const P = document.createElement("h3");
-  P.className = "success-title", P.textContent = "Vielen Dank!";
-  const M = document.createElement("p");
-  M.className = "success-message", M.textContent = "Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.";
-  const z = document.createElement("div");
-  z.className = "powered-by";
-  const S = document.createElement("a");
-  return S.href = "https://hallopetra.com", S.target = "_blank", S.textContent = "HalloPetra", z.appendChild(document.createTextNode("Bereitgestellt von ")), z.appendChild(S), u.appendChild(I), u.appendChild(P), u.appendChild(M), u.appendChild(z), l.appendChild(g), l.appendChild(b), l.appendChild(u), document.body.appendChild(t), document.body.appendChild(h), document.body.appendChild(l), {
-    widgetBtn: t,
-    popup: l,
-    closeBtn: g,
-    form: d,
-    nameInput: f,
-    phoneInput: n,
-    countrySelect: w,
-    submitBtn: o,
-    nameGroup: p,
-    phoneGroup: r,
-    speechBubble: h,
-    contactFormContainer: b,
-    successScreen: u
+  const T = document.createElement("h3");
+  T.className = "success-title", T.textContent = "Vielen Dank!";
+  const i = document.createElement("p");
+  i.className = "success-message", i.textContent = "Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.";
+  const w = document.createElement("div");
+  w.className = "powered-by";
+  const z = document.createElement("a");
+  return z.href = "https://hallopetra.com", z.target = "_blank", z.textContent = "HalloPetra", w.appendChild(document.createTextNode("Bereitgestellt von ")), w.appendChild(z), m.appendChild(B), m.appendChild(T), m.appendChild(i), m.appendChild(w), o.appendChild(h), o.appendChild(g), o.appendChild(m), document.body.appendChild(n), document.body.appendChild(p), document.body.appendChild(o), {
+    widgetBtn: n,
+    popup: o,
+    closeBtn: h,
+    form: b,
+    nameInput: x,
+    phoneInput: r,
+    countrySelect: E,
+    submitBtn: l,
+    nameGroup: a,
+    phoneGroup: d,
+    speechBubble: p,
+    contactFormContainer: g,
+    successScreen: m
   };
 }
-function F(e, t) {
+function j(t, n) {
   const {
-    widgetBtn: a,
-    popup: i,
-    closeBtn: h,
-    form: l,
-    nameInput: g,
-    phoneInput: b,
-    countrySelect: E,
-    submitBtn: k,
-    nameGroup: d,
-    phoneGroup: p,
-    speechBubble: y,
-    contactFormContainer: f,
-    successScreen: L
-  } = e;
-  let r = !1;
+    widgetBtn: s,
+    popup: e,
+    closeBtn: p,
+    form: o,
+    nameInput: h,
+    phoneInput: g,
+    countrySelect: N,
+    submitBtn: y,
+    nameGroup: b,
+    phoneGroup: a,
+    speechBubble: v,
+    contactFormContainer: x,
+    successScreen: k
+  } = t;
+  let d = !1;
   setTimeout(function() {
-    y.classList.add("show"), document.addEventListener("click", function n() {
-      y.classList.remove("show"), document.removeEventListener("click", n);
+    v.classList.add("show"), document.addEventListener("click", function r() {
+      v.classList.remove("show"), document.removeEventListener("click", r);
     }), setTimeout(function() {
-      y.classList.remove("show");
+      v.classList.remove("show");
     }, 3e4);
-  }, 5e3), a.addEventListener("click", function() {
-    i.style.display = "block", y.classList.remove("show");
-  }), h.addEventListener("click", function() {
-    i.style.display = "none", N();
+  }, 5e3), s.addEventListener("click", function() {
+    e.style.display = "block", v.classList.remove("show");
+  }), p.addEventListener("click", function() {
+    e.style.display = "none", I();
   });
-  function N() {
-    l.reset(), r = !1, v(), f.style.display = "block", L.style.display = "none";
+  function I() {
+    o.reset(), d = !1, L(), x.style.display = "block", k.style.display = "none";
   }
-  function C() {
-    const n = g.value.trim(), m = d.querySelector(".error-message");
-    return n.length < 2 ? (r && (d.classList.add("invalid"), m.textContent = "Bitte geben Sie einen gültigen Namen ein."), !1) : (d.classList.remove("invalid"), m.textContent = "", !0);
+  function S() {
+    const r = h.value.trim(), f = b.querySelector(".error-message");
+    return r.length < 2 ? (d && (b.classList.add("invalid"), f.textContent = "Bitte geben Sie einen gültigen Namen ein."), !1) : (b.classList.remove("invalid"), f.textContent = "", !0);
   }
-  function w() {
-    const n = E.value, m = b.value.trim(), c = p.querySelector(".error-message"), s = m.replace(/\D/g, "");
-    let x = !1, o = "";
-    return s.length === 0 ? o = "Bitte geben Sie eine Telefonnummer ein." : n === "+49" && (s.length < 10 || s.length > 11) ? o = "Deutsche Telefonnummern müssen 10-11 Ziffern haben." : n === "+43" && (s.length < 9 || s.length > 10) ? o = "Österreichische Telefonnummern müssen 9-10 Ziffern haben." : n === "+41" && s.length !== 9 ? o = "Schweizer Telefonnummern müssen 9 Ziffern haben." : x = !0, x ? (p.classList.remove("invalid"), c.textContent = "", !0) : (r && (p.classList.add("invalid"), c.textContent = o), !1);
+  function E() {
+    const r = N.value, f = g.value.trim(), u = a.querySelector(".error-message"), c = f.replace(/\D/g, "");
+    let C = !1, l = "";
+    return c.length === 0 ? l = "Bitte geben Sie eine Telefonnummer ein." : r === "+49" && (c.length < 10 || c.length > 11) ? l = "Deutsche Telefonnummern müssen 10-11 Ziffern haben." : r === "+43" && (c.length < 9 || c.length > 10) ? l = "Österreichische Telefonnummern müssen 9-10 Ziffern haben." : r === "+41" && c.length !== 9 ? l = "Schweizer Telefonnummern müssen 9 Ziffern haben." : C = !0, C ? (a.classList.remove("invalid"), u.textContent = "", !0) : (d && (a.classList.add("invalid"), u.textContent = l), !1);
   }
-  function v() {
-    const n = C(), m = w();
-    k.disabled = !(n && m);
+  function L() {
+    const r = S(), f = E();
+    y.disabled = !(r && f);
   }
-  g.addEventListener("input", v), b.addEventListener("input", v), E.addEventListener("change", v), l.addEventListener("submit", function(n) {
-    n.preventDefault(), r = !0;
-    const m = C(), c = w();
-    if (!m || !c)
+  h.addEventListener("input", L), g.addEventListener("input", L), N.addEventListener("change", L), o.addEventListener("submit", function(r) {
+    r.preventDefault(), d = !0;
+    const f = S(), u = E();
+    if (!f || !u)
       return;
-    const s = g.value.trim(), x = E.value, o = b.value.trim().replace(/\D/g, ""), u = `${x}${o}`;
-    typeof t.onSubmit == "function" && t.onSubmit({ name: s, phoneNumber: u }), console.log("Call request submitted:", { name: s, phoneNumber: u }), f.style.display = "none", L.style.display = "block", r = !1, l.reset(), v();
-  }), v();
+    if (!n.customerId) {
+      const i = a.querySelector(".error-message");
+      a.classList.add("invalid"), i.textContent = "Konfigurationsfehler: Keine Kunden-ID vorhanden.", console.error("ContactWidget: customerId is required but was not provided in the configuration");
+      return;
+    }
+    const c = h.value.trim(), C = N.value, l = g.value.trim().replace(/\D/g, ""), m = `${C}${l}`;
+    y.disabled = !0, y.textContent = "Wird gesendet...";
+    const B = new AbortController(), T = setTimeout(() => B.abort(), 1e4);
+    fetch(n.apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: c,
+        phone: m,
+        customerId: n.customerId,
+        url: window.location.href,
+        // Include the current page URL
+        userAgent: navigator.userAgent
+        // Include user agent for analytics
+      }),
+      signal: B.signal
+    }).then((i) => {
+      if (!i.ok)
+        throw new Error("Server responded with an error");
+      return i.json();
+    }).then((i) => {
+      if (console.log("Call request successfully sent to server:", i), typeof n.onSubmit == "function" && n.onSubmit({ name: c, phoneNumber: m, success: !0 }), i && i.message) {
+        const w = k.querySelector(".success-message");
+        w && (w.textContent = i.message);
+      }
+      x.style.display = "none", k.style.display = "block";
+    }).catch((i) => {
+      console.error("Error sending call request:", i), typeof n.onSubmit == "function" && n.onSubmit({ name: c, phoneNumber: m, success: !1, error: i });
+      const w = a.querySelector(".error-message");
+      a.classList.add("invalid"), w.textContent = "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.";
+    }).finally(() => {
+      clearTimeout(T), y.disabled = !1, y.textContent = n.submitText || "Anruf bekommen", d = !1, k.style.display === "block" && (o.reset(), L());
+    });
+  }), L();
 }
-function j(e = {}) {
-  D();
-  const t = A(e);
-  return F(t, e), {
+function W(t = {}) {
+  t.apiUrl = t.apiUrl || "https://api.hallopetra.de/api/web-widget/request-call";
+  const n = !t.customerId;
+  if (n) {
+    console.error("ContactWidget: customerId is required but was not provided in the configuration");
+    const e = document.createElement("div");
+    e.style.position = "fixed", e.style.bottom = "20px", e.style.right = "20px", e.style.backgroundColor = "#FEF2F2", e.style.color = "#B91C1C", e.style.padding = "10px 15px", e.style.borderRadius = "8px", e.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)", e.style.zIndex = "10000", e.style.fontFamily = "Inter, sans-serif", e.style.fontSize = "14px", e.style.fontWeight = "500", e.style.maxWidth = "300px", e.textContent = "ContactWidget Error: Missing customerId. Widget will not function correctly.", (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") && (document.body.appendChild(e), setTimeout(() => {
+      document.body.contains(e) && document.body.removeChild(e);
+    }, 1e4));
+  }
+  A();
+  const s = P(t);
+  if (n) {
+    const e = s.contactFormContainer, p = s.form, o = document.createElement("div");
+    o.style.backgroundColor = "#FEF2F2", o.style.color = "#B91C1C", o.style.padding = "10px", o.style.borderRadius = "8px", o.style.margin = "0 0 16px 0", o.style.fontSize = "14px", o.style.fontWeight = "500", o.style.textAlign = "center", o.textContent = "Konfigurationsfehler: Keine Kunden-ID vorhanden.", e.insertBefore(o, e.firstChild), p.onsubmit = function(h) {
+      return h.preventDefault(), !1;
+    };
+  }
+  return j(s, t), {
     // Show the popup programmatically
     showPopup: () => {
-      t.popup.style.display = "block", t.speechBubble.classList.remove("show");
+      s.popup.style.display = "block", s.speechBubble.classList.remove("show");
     },
     // Hide the popup programmatically
     hidePopup: () => {
-      t.popup.style.display = "none";
+      s.popup.style.display = "none";
     },
     // Show speech bubble programmatically
     showSpeechBubble: () => {
-      t.speechBubble.classList.add("show");
+      s.speechBubble.classList.add("show");
     },
     // Hide speech bubble programmatically
     hideSpeechBubble: () => {
-      t.speechBubble.classList.remove("show");
+      s.speechBubble.classList.remove("show");
     },
     // Update widget configuration
-    updateConfig: (a) => {
-      a.speechBubbleText && (t.speechBubble.textContent = a.speechBubbleText);
+    updateConfig: (e) => {
+      e.speechBubbleText && (s.speechBubble.textContent = e.speechBubbleText);
     }
   };
 }
 window.ContactWidget = {
-  init: j
+  init: W
 };
 document.addEventListener("DOMContentLoaded", () => {
-  const e = document.querySelector("script[data-contact-widget-auto-init]");
-  if (e) {
-    const t = {};
+  const t = document.querySelector("script[data-contact-widget-auto-init]");
+  if (t) {
+    const n = {};
     [
       "buttonText",
       "formTitle",
@@ -491,10 +544,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "formDescription",
       "agbUrl",
       "datenschutzUrl",
-      "speechBubbleText"
-    ].forEach((i) => {
-      const h = `data-${i.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
-      e.hasAttribute(h) && (t[i] = e.getAttribute(h));
-    }), j(t);
+      "speechBubbleText",
+      "apiUrl",
+      "customerId"
+    ].forEach((e) => {
+      const p = `data-${e.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
+      t.hasAttribute(p) && (n[e] = t.getAttribute(p));
+    }), W(n);
   }
 });
