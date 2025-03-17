@@ -82,7 +82,10 @@ You can customize the widget by passing configuration options:
       
       // Button and messages
       submitText: 'Anruf bekommen', // Text for the submit button
-      successMessage: 'Vielen Dank! Wir werden Sie in Kürze kontaktieren.', // Message shown after form submission
+      
+      // Success screen customization
+      successTitle: 'Vielen Dank!', // Title shown on the success screen
+      successMessage: 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.', // Message shown on success screen
       
       // Legal links
       agbUrl: 'https://your-domain.com/agb', // URL to your terms and conditions
@@ -121,7 +124,8 @@ You can also use data attributes for basic configuration:
   data-name-placeholder="Ihr Name"
   data-phone-placeholder="Ihre Telefonnummer"
   data-submit-text="Anruf bekommen"
-  data-success-message="Vielen Dank! Wir werden Sie in Kürze kontaktieren."
+  data-success-title="Vielen Dank!"
+  data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-agb-url="https://your-domain.com/agb"
   data-datenschutz-url="https://your-domain.com/datenschutz"
 ></script>
@@ -231,6 +235,8 @@ The widget includes the following validation features:
    - Germany (+49): 10-11 digits
    - Austria (+43): 9-10 digits
    - Switzerland (+41): 9 digits
+   - **Automatic formatting**: Leading zeros and hyphens are automatically removed
+   - Visual feedback when formatting is applied
 3. **E.164 format**: Automatically formats the phone number to E.164 standard
 
 The submit button remains disabled until all validations pass, but error messages are only shown after the user attempts to submit the form.
@@ -254,7 +260,9 @@ widget.hideSpeechBubble();
 
 // Update widget configuration
 widget.updateConfig({
-  speechBubbleText: 'New speech bubble text'
+  speechBubbleText: 'New speech bubble text',
+  successTitle: 'Thank you for your request!',
+  successMessage: 'Our team will contact you shortly.'
 });
 ```
 
