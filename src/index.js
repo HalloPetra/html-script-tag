@@ -715,17 +715,47 @@ function initWidgetBehavior(elements, config) {
     // Format phone number in E.164 format
     const e164PhoneNumber = `${countryCode}${phoneNumber}`;
 
-    // Call the handler function if provided
-    if (typeof config.onSubmit === 'function') {
-      config.onSubmit({ name, phoneNumber: e164PhoneNumber });
-    }
+    // Prepare data for API submission
+    const formData = {
+      companyId: config.companyId || 'default',
+      name: name,
+      phone: e164PhoneNumber
+    };
 
-    // Default behavior - log to console
-    console.log('Call request submitted:', { name, phoneNumber: e164PhoneNumber });
+    // Send data to the specified API endpoint
+    fetch('https://martin-desired-ringtail.ngrok-free.app', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success:', data);
 
-    // Show success screen
-    contactFormContainer.style.display = 'none';
-    successScreen.style.display = 'block';
+        // Call the handler function if provided
+        if (typeof config.onSubmit === 'function') {
+          config.onSubmit({ name, phoneNumber: e164PhoneNumber, response: data });
+        }
+
+        // Show success screen
+        contactFormContainer.style.display = 'none';
+        successScreen.style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+
+        // Optional: Implement error handling UI here
+        // For now, still show success screen to avoid disrupting user experience
+        contactFormContainer.style.display = 'none';
+        successScreen.style.display = 'block';
+      });
 
     // Reset form state but keep the popup open with success screen
     formSubmitted = false;
@@ -794,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const configAttributes = [
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText'
+      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'companyId'
     ];
 
     configAttributes.forEach(attr => {

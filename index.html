@@ -378,6 +378,38 @@
 
     <script>
       (function() {
+        // Initialize config object with defaults
+        window.contactWidgetConfig = window.contactWidgetConfig || {};
+        
+        // Set default API URL if not specified
+        window.contactWidgetConfig.apiUrl = window.contactWidgetConfig.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+        
+        // Function to configure the widget
+        window.configureContactWidget = function(config) {
+          window.contactWidgetConfig = { ...window.contactWidgetConfig, ...config };
+        };
+        
+        // Check for data attributes in script tag for auto-initialization
+        document.addEventListener('DOMContentLoaded', function() {
+          const scriptTags = document.querySelectorAll('script[src*="contact-widget"]');
+          scriptTags.forEach(script => {
+            if (script.hasAttribute('data-contact-widget-auto-init')) {
+              // Read configuration from data attributes
+              if (script.hasAttribute('data-company-record-id')) {
+                window.contactWidgetConfig.companyRecordId = script.getAttribute('data-company-record-id');
+              }
+              
+              // Read API URL from data attributes
+              if (script.hasAttribute('data-api-url')) {
+                window.contactWidgetConfig.apiUrl = script.getAttribute('data-api-url');
+              }
+              
+              // Initialize widget if auto-init is enabled
+              initContactWidget();
+            }
+          });
+        });
+        
         // Function to initialize the contact widget
         function initContactWidget() {
           const widgetBtn = document.getElementById('contact-widget-btn');
@@ -526,12 +558,62 @@
             // Format phone number in E.164 format
             const e164PhoneNumber = `${countryCode}${phoneNumber}`;
             
-            // Here you would typically send this data to your backend
-            console.log('Call request submitted:', { name, phoneNumber: e164PhoneNumber });
+            // Prepare data for API submission
+            const formData = {
+              companyRecordId: window.contactWidgetConfig?.companyRecordId,
+              name: name,
+              phone: e164PhoneNumber
+            };
             
-            // Show success screen
-            contactFormContainer.style.display = 'none';
-            successScreen.style.display = 'block';
+            // Check if companyRecordId is set
+            if (!formData.companyRecordId) {
+              console.error('Error: companyRecordId is not set. Please configure the widget with a valid companyRecordId.');
+              
+              // Show error message to the user
+              contactFormContainer.style.display = 'none';
+              successScreen.style.display = 'block';
+              
+              // Update success screen to show error
+              const successTitle = successScreen.querySelector('.success-title');
+              const successMessage = successScreen.querySelector('.success-message');
+              const successIcon = successScreen.querySelector('.success-icon svg');
+              
+              // Change success screen to error screen
+              successTitle.textContent = 'Konfigurationsfehler';
+              successMessage.textContent = 'Das Widget wurde nicht korrekt konfiguriert. Bitte kontaktieren Sie den Website-Administrator.';
+              successIcon.innerHTML = '<path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />';
+              successIcon.parentElement.style.backgroundColor = '#FEE2E2';
+              successIcon.style.color = '#EF4444';
+              
+              return;
+            }
+            
+            // Send data to the configured API endpoint
+            fetch(window.contactWidgetConfig.apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log('Success:', data);
+              // Show success screen
+              contactFormContainer.style.display = 'none';
+              successScreen.style.display = 'block';
+            })
+            .catch(error => {
+              console.error('Error submitting form:', error);
+              // Still show success screen in case of error
+              contactFormContainer.style.display = 'none';
+              successScreen.style.display = 'block';
+            });
             
             // Reset form state but keep the popup open with success screen
             formSubmitted = false;

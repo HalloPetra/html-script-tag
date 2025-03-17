@@ -26,6 +26,12 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 ```html
 <script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
+  // Konfigurieren Sie das Widget mit Ihrer companyRecordId - ERFORDERLICH
+  configureContactWidget({
+    companyRecordId: 'IHRE_COMPANY_RECORD_ID', // Ersetzen Sie dies mit Ihrer spezifischen ID - ERFORDERLICH
+    apiUrl: 'https://ihre-custom-api.beispiel.de/endpunkt' // Optional: Überschreiben Sie den Standard-API-Endpunkt
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     // Widget mit Standardeinstellungen initialisieren
     const widget = ContactWidget.init();
@@ -35,11 +41,28 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 
 ### Automatische Initialisierung
 
-Sie können das Widget auch automatisch initialisieren, indem Sie ein Datenattribut zum Script-Tag hinzufügen:
+Sie können das Widget auch automatisch initialisieren, indem Sie Datenattribute zum Script-Tag hinzufügen:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" data-contact-widget-auto-init></script>
+<script 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  data-contact-widget-auto-init
+  data-company-record-id="IHRE_COMPANY_RECORD_ID"
+  data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
+></script>
 ```
+
+### Erforderliche Konfiguration
+
+Das Widget erfordert die folgende Konfiguration:
+
+- **companyRecordId**: Ihre eindeutige Unternehmenskennung (erforderlich)
+  - Wenn nicht angegeben, zeigt das Widget eine Fehlermeldung an
+
+### Optionale Konfiguration
+
+- **apiUrl**: Der API-Endpunkt für die Formularübermittlung
+  - Standard: `https://api.hallopetra.de/api/web-widget/request-call`
 
 ### Anpassung
 
@@ -48,6 +71,14 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
 ```html
 <script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
+  // Konfigurieren Sie das Widget mit erforderlichen und optionalen Einstellungen
+  configureContactWidget({
+    companyRecordId: 'IHRE_COMPANY_RECORD_ID', // Erforderlich: Ihre eindeutige Unternehmenskennung
+    apiUrl: 'https://ihre-custom-api.beispiel.de/endpunkt', // Optional: Benutzerdefinierter API-Endpunkt
+    
+    // Zusätzliche optionale Anpassungen...
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
       // Button- und Sprechblasenanpassung
@@ -80,22 +111,10 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
         // data enthält: 
         // - name: Der Name des Benutzers
         // - phoneNumber: Die vollständige Telefonnummer im E.164-Format (z.B. +491234567890)
+        // - response: Die API-Antwortdaten
         
-        // Sie können die Daten mit fetch oder XMLHttpRequest an Ihren Server senden
-        fetch('https://ihre-api.de/kontakt-senden', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(result => {
-          console.log('Erfolg:', result);
-        })
-        .catch(error => {
-          console.error('Fehler:', error);
-        });
+        // Hinweis: Das Widget sendet die Daten automatisch an den API-Endpunkt
+        // Dieser Callback wird nach erfolgreicher Übermittlung ausgeführt
       }
     });
   });
@@ -108,6 +127,8 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
+  data-company-record-id="IHRE_COMPANY_RECORD_ID"
+  data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -254,3 +275,33 @@ Das Kontaktformular-Widget ist kompatibel mit:
 ## Lizenz
 
 MIT 
+
+## API-Integration
+
+Das Widget sendet Formulardaten automatisch an den in Ihrer Konfiguration angegebenen API-Endpunkt:
+```
+https://api.hallopetra.de/api/web-widget/request-call
+```
+Dies ist der Standard-Endpunkt, aber Sie können einen benutzerdefinierten Endpunkt mit dem Parameter `apiUrl` konfigurieren.
+
+### Anfrage-Format
+Die Daten werden als JSON-Objekt mit der folgenden Struktur gesendet:
+```json
+{
+  "companyRecordId": "IHRE_COMPANY_RECORD_ID",
+  "name": "Name des Benutzers",
+  "phone": "+491234567890"
+}
+```
+
+Wobei:
+- `companyRecordId` Ihre eindeutige Unternehmenskennung ist (erforderlich)
+- `name` der Name des Benutzers aus dem Formular ist
+- `phone` die vollständige Telefonnummer im E.164-Format ist
+
+### Antwortverarbeitung
+Das Widget verarbeitet sowohl erfolgreiche als auch fehlgeschlagene API-Antworten:
+- Bei Erfolg: Zeigt dem Benutzer den Erfolgsbildschirm an
+- Bei Fehler: Zeigt trotzdem den Erfolgsbildschirm an, um eine reibungslose Benutzererfahrung zu gewährleisten, protokolliert den Fehler jedoch in der Konsole
+
+Sie können die Antwortverarbeitung anpassen, indem Sie eine `onSubmit`-Callback-Funktion bereitstellen. 

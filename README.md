@@ -26,6 +26,12 @@ A simple, customizable contact form widget that can be embedded on any website. 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
+  // Configure the widget with your companyRecordId - REQUIRED
+  configureContactWidget({
+    companyRecordId: 'YOUR_COMPANY_RECORD_ID', // Replace with your specific ID - REQUIRED
+    apiUrl: 'https://your-custom-api.example.com/endpoint' // Optional: override the default API endpoint
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     // Initialize the widget with default settings
     const widget = ContactWidget.init();
@@ -35,11 +41,28 @@ A simple, customizable contact form widget that can be embedded on any website. 
 
 ### Auto-initialization
 
-You can also auto-initialize the widget by adding a data attribute to the script tag:
+You can also auto-initialize the widget by adding data attributes to the script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" data-contact-widget-auto-init></script>
+<script 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  data-contact-widget-auto-init
+  data-company-record-id="YOUR_COMPANY_RECORD_ID"
+  data-api-url="https://your-custom-api.example.com/endpoint"
+></script>
 ```
+
+### Required Configuration
+
+The widget requires the following configuration:
+
+- **companyRecordId**: Your unique company identifier (required)
+  - If not provided, the widget will display an error message
+
+### Optional Configuration
+
+- **apiUrl**: The API endpoint for form submission
+  - Default: `https://api.hallopetra.de/api/web-widget/request-call`
 
 ### Customization
 
@@ -48,6 +71,14 @@ You can customize the widget by passing configuration options:
 ```html
 <script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
 <script>
+  // Configure the widget with required and optional settings
+  configureContactWidget({
+    companyRecordId: 'YOUR_COMPANY_RECORD_ID', // Required: Your unique company identifier
+    apiUrl: 'https://your-custom-api.example.com/endpoint', // Optional: Custom API endpoint
+    
+    // Additional optional customizations...
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
       // Button and speech bubble customization
@@ -80,22 +111,10 @@ You can customize the widget by passing configuration options:
         // data contains: 
         // - name: The user's name
         // - phoneNumber: The full phone number in E.164 format (e.g. +491234567890)
+        // - response: The API response data
         
-        // You can send the data to your server using fetch or XMLHttpRequest
-        fetch('https://your-api.com/submit-contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(result => {
-          console.log('Success:', result);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+        // Note: The widget automatically sends the data to the API endpoint
+        // This callback is executed after successful submission
       }
     });
   });
@@ -108,6 +127,8 @@ You can also use data attributes for basic configuration:
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
   data-contact-widget-auto-init
+  data-company-record-id="YOUR_COMPANY_RECORD_ID"
+  data-api-url="https://your-custom-api.example.com/endpoint"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -254,3 +275,33 @@ The contact form widget is compatible with:
 ## License
 
 MIT
+
+## API Integration
+
+The widget automatically submits form data to the API endpoint specified in your configuration:
+```
+https://api.hallopetra.de/api/web-widget/request-call
+```
+This is the default endpoint, but you can configure a custom endpoint using the `apiUrl` parameter.
+
+### Request Format
+The data is sent as a JSON object with the following structure:
+```json
+{
+  "companyRecordId": "YOUR_COMPANY_RECORD_ID",
+  "name": "User's name",
+  "phone": "+491234567890"
+}
+```
+
+Where:
+- `companyRecordId` is your unique company identifier (required)
+- `name` is the user's name from the form
+- `phone` is the full phone number in E.164 format
+
+### Response Handling
+The widget handles both successful and failed API responses:
+- On success: Displays the success screen to the user
+- On error: Still displays the success screen to provide a smooth user experience, but logs the error to the console
+
+You can customize the response handling by providing an `onSubmit` callback function.
