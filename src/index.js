@@ -460,13 +460,13 @@ function createWidgetElements(config) {
 
   // Create AGB link
   const agbLink = document.createElement('a');
-  agbLink.href = config.agbUrl || 'https://example.com/agb';
+  agbLink.href = config.agbUrl || 'https://hallopetra.de/agb';
   agbLink.target = '_blank';
   agbLink.textContent = 'AGB';
 
   // Create Datenschutz link
   const datenschutzLink = document.createElement('a');
-  datenschutzLink.href = config.datenschutzUrl || 'https://example.com/datenschutz';
+  datenschutzLink.href = config.datenschutzUrl || 'https://hallopetra.de/datenschutz';
   datenschutzLink.target = '_blank';
   datenschutzLink.textContent = 'Datenschutzbedingungen';
 
@@ -525,7 +525,7 @@ function createWidgetElements(config) {
   poweredBy.className = 'powered-by';
 
   const poweredByLink = document.createElement('a');
-  poweredByLink.href = 'https://hallopetra.com';
+  poweredByLink.href = 'https://hallopetra.de';
   poweredByLink.target = '_blank';
   poweredByLink.textContent = 'HalloPetra';
 
