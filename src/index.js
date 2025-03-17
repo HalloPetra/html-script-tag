@@ -367,7 +367,7 @@ function createWidgetElements(config) {
 
   // Create form heading
   const heading = document.createElement('h3');
-  heading.textContent = config.formTitle || 'Wir werden rufen Sie zurück';
+  heading.textContent = config.formTitle || 'Wir rufen Sie zurück';
 
   // Create form description
   const description = document.createElement('p');

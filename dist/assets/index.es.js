@@ -321,7 +321,7 @@ function j(e) {
   const i = document.createElement("div");
   i.id = "contact-form-container";
   const T = document.createElement("h3");
-  T.textContent = e.formTitle || "Wir werden rufen Sie zurück";
+  T.textContent = e.formTitle || "Wir rufen Sie zurück";
   const v = document.createElement("p");
   v.className = "contact-popup-description", v.textContent = e.formDescription || "Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren.";
   const x = document.createElement("form");
