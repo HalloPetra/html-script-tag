@@ -24,7 +24,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 1. Add the script to your HTML file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   // Configure the widget with your companyRecordId - REQUIRED
   configureContactWidget({
@@ -49,7 +49,7 @@ You can also auto-initialize the widget by adding data attributes to the script 
 
 ```html
 <script 
-  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
   data-customer-id="your-customer-id"
 ></script>
@@ -62,7 +62,7 @@ You can also auto-initialize the widget by adding data attributes to the script 
 You can customize the widget by passing configuration options:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   // Configure the widget with required and optional settings
   configureContactWidget({
@@ -81,7 +81,7 @@ You can customize the widget by passing configuration options:
       apiUrl: 'https://api.hallopetra.de/api/web-widget/request-call', // API endpoint for call requests
       
       // Button and speech bubble customization
-      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png', // Custom logo for the button
+      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Custom logo for the button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in the speech bubble
       
       // Form title and description
@@ -125,11 +125,11 @@ You can also use data attributes for basic configuration:
 
 ```html
 <script 
-  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
   data-customer-id="your-customer-id"
   data-api-url="https://api.hallopetra.de/api/web-widget/request-call"
-  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
+  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
   data-form-description="Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren."

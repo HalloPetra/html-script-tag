@@ -24,7 +24,7 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 1. Fügen Sie das Skript zu Ihrer HTML-Datei hinzu:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   // Konfigurieren Sie das Widget mit Ihrer companyRecordId - ERFORDERLICH
   configureContactWidget({
@@ -45,7 +45,7 @@ Sie können das Widget auch automatisch initialisieren, indem Sie Datenattribute
 
 ```html
 <script 
-  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
   data-company-record-id="IHRE_COMPANY_RECORD_ID"
   data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
@@ -69,7 +69,7 @@ Das Widget erfordert die folgende Konfiguration:
 Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js"></script>
 <script>
   // Konfigurieren Sie das Widget mit erforderlichen und optionalen Einstellungen
   configureContactWidget({
@@ -82,7 +82,7 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
       // Button- und Sprechblasenanpassung
-      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png', // Benutzerdefiniertes Logo für den Button
+      logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Benutzerdefiniertes Logo für den Button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in der Sprechblase
       
       // Formular-Titel und Beschreibung
@@ -125,11 +125,11 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
 
 ```html
 <script 
-  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/dist/assets/index.js" 
+  src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
   data-company-record-id="IHRE_COMPANY_RECORD_ID"
   data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
-  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@master/assets/logo.png"
+  data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
   data-form-description="Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren."
