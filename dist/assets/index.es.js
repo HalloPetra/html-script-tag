@@ -356,9 +356,9 @@ function j(e) {
   const c = document.createElement("div");
   c.className = "compliance-text";
   const y = document.createElement("a");
-  y.href = e.agbUrl || "https://example.com/agb", y.target = "_blank", y.textContent = "AGB";
+  y.href = e.agbUrl || "https://hallopetra.de/agb", y.target = "_blank", y.textContent = "AGB";
   const l = document.createElement("a");
-  l.href = e.datenschutzUrl || "https://example.com/datenschutz", l.target = "_blank", l.textContent = "Datenschutzbedingungen", c.innerHTML = "Mit dem Absenden stimmen Sie unseren ", c.appendChild(y), c.appendChild(document.createTextNode(" und ")), c.appendChild(l), c.appendChild(document.createTextNode(" zu."));
+  l.href = e.datenschutzUrl || "https://hallopetra.de/datenschutz", l.target = "_blank", l.textContent = "Datenschutzbedingungen", c.innerHTML = "Mit dem Absenden stimmen Sie unseren ", c.appendChild(y), c.appendChild(document.createTextNode(" und ")), c.appendChild(l), c.appendChild(document.createTextNode(" zu."));
   const d = document.createElement("button");
   d.type = "submit", d.className = "submit-btn", d.id = "submit-btn", d.textContent = e.submitText || "Anruf bekommen", d.disabled = !0, x.appendChild(p), x.appendChild(h), x.appendChild(c), x.appendChild(d), i.appendChild(T), i.appendChild(v), i.appendChild(x);
   const b = document.createElement("div");
@@ -376,7 +376,7 @@ function j(e) {
   const m = document.createElement("div");
   m.className = "powered-by";
   const N = document.createElement("a");
-  return N.href = "https://hallopetra.com", N.target = "_blank", N.textContent = "HalloPetra", m.appendChild(document.createTextNode("Bereitgestellt von ")), m.appendChild(N), b.appendChild(f), b.appendChild(L), b.appendChild(z), b.appendChild(m), r.appendChild(g), r.appendChild(i), r.appendChild(b), document.body.appendChild(t), document.body.appendChild(a), document.body.appendChild(r), {
+  return N.href = "https://hallopetra.de", N.target = "_blank", N.textContent = "HalloPetra", m.appendChild(document.createTextNode("Bereitgestellt von ")), m.appendChild(N), b.appendChild(f), b.appendChild(L), b.appendChild(z), b.appendChild(m), r.appendChild(g), r.appendChild(i), r.appendChild(b), document.body.appendChild(t), document.body.appendChild(a), document.body.appendChild(r), {
     widgetBtn: t,
     popup: r,
     closeBtn: g,
