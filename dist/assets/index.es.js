@@ -409,15 +409,15 @@ function j(e, n) {
     successScreen: E
   } = e;
   let b = !1;
-  setTimeout(function () {
+  setTimeout(function() {
     k.classList.add("show"), document.addEventListener("click", function t() {
       k.classList.remove("show"), document.removeEventListener("click", t);
-    }), setTimeout(function () {
+    }), setTimeout(function() {
       k.classList.remove("show");
     }, 3e4);
-  }, 5e3), s.addEventListener("click", function () {
+  }, 5e3), s.addEventListener("click", function() {
     r.style.display = "block", k.classList.remove("show");
-  }), a.addEventListener("click", function () {
+  }), a.addEventListener("click", function() {
     r.style.display = "none", B();
   });
   function B() {
@@ -453,9 +453,9 @@ function j(e, n) {
     const t = T(), l = S();
     w.disabled = !(t && l);
   }
-  x.addEventListener("input", m), c.addEventListener("input", function () {
+  x.addEventListener("input", m), c.addEventListener("input", function() {
     q(), m();
-  }), L.addEventListener("change", m), i.addEventListener("submit", function (t) {
+  }), L.addEventListener("change", m), i.addEventListener("submit", function(t) {
     t.preventDefault(), b = !0, q();
     const l = T(), C = S();
     if (!l || !C)
@@ -516,7 +516,7 @@ function P(e = {}) {
   const s = F(e);
   if (n) {
     const r = s.contactFormContainer, a = s.form, i = document.createElement("div");
-    i.style.backgroundColor = "#FEF2F2", i.style.color = "#B91C1C", i.style.padding = "10px", i.style.borderRadius = "8px", i.style.margin = "0 0 16px 0", i.style.fontSize = "14px", i.style.fontWeight = "500", i.style.textAlign = "center", i.textContent = "Konfigurationsfehler: Keine Kunden-ID vorhanden.", r.insertBefore(i, r.firstChild), a.onsubmit = function (x) {
+    i.style.backgroundColor = "#FEF2F2", i.style.color = "#B91C1C", i.style.padding = "10px", i.style.borderRadius = "8px", i.style.margin = "0 0 16px 0", i.style.fontSize = "14px", i.style.fontWeight = "500", i.style.textAlign = "center", i.textContent = "Konfigurationsfehler: Keine Kunden-ID vorhanden.", r.insertBefore(i, r.firstChild), a.onsubmit = function(x) {
       return x.preventDefault(), !1;
     };
   }
