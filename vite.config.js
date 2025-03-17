@@ -4,7 +4,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "src/index.js",
-      name: "index",
+      name: "ContactWidget",
       fileName: (format) =>
         format === "umd" ? `assets/index.js` : `assets/index.${format}.js`,
     },

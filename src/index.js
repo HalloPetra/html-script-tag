@@ -856,7 +856,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Export
-export default {
+// Export for module systems
+const ContactWidgetExport = {
   init: initContactWidget
 };
+
+// Expose to global scope for direct browser usage
+window.ContactWidget = ContactWidgetExport;
+
+export default ContactWidgetExport;
