@@ -39,6 +39,19 @@
           formDescription: 'Wir werden Sie innerhalb der nächsten Minute unter der angegebenen Telefonnummer kontaktieren.',
           agbUrl: 'https://example.com/agb',
           datenschutzUrl: 'https://example.com/datenschutz',
+          extraInputFields: [
+            { 
+              type: "email", 
+              required: true, 
+              label: "E-Mail Adresse",
+              placeholder: "Ihre E-Mail eingeben"
+            },
+            { 
+              type: "address",
+              label: "Vollständige Adresse",
+              placeholder: "Straße, PLZ, Ort"
+            }
+          ],
           onSubmit: function(data) {
             console.log('Call request submitted:', data);
           }

@@ -9,6 +9,7 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 - Anpassbares Erscheinungsbild und Text
 - Interaktive Sprechblase, die nach 5 Sekunden erscheint und nach 30 Sekunden verschwindet
 - Länderauswahl für Telefonnummern (Deutschland, Österreich, Schweiz)
+- Optionale E-Mail- und Adressfelder
 - Eingabevalidierung mit hilfreichen Fehlermeldungen (werden erst nach dem Absenden des Formulars angezeigt)
 - Erfolgsbildschirm mit "Bereitgestellt von HalloPetra"-Hinweis
 - Einwilligungstext mit anpassbaren Links zu AGB und Datenschutzerklärung
@@ -34,7 +35,9 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 
   document.addEventListener('DOMContentLoaded', function() {
     // Widget mit Standardeinstellungen initialisieren
-    const widget = ContactWidget.init();
+    const widget = ContactWidget.init({
+      customerId: "ihre-kunden-id" // Erforderlich
+    });
   });
 </script>
 ```
@@ -47,22 +50,11 @@ Sie können das Widget auch automatisch initialisieren, indem Sie Datenattribute
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-company-record-id="IHRE_COMPANY_RECORD_ID"
-  data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
+  data-customer-id="ihre-kunden-id"
 ></script>
 ```
 
-### Erforderliche Konfiguration
-
-Das Widget erfordert die folgende Konfiguration:
-
-- **companyRecordId**: Ihre eindeutige Unternehmenskennung (erforderlich)
-  - Wenn nicht angegeben, zeigt das Widget eine Fehlermeldung an
-
-### Optionale Konfiguration
-
-- **apiUrl**: Der API-Endpunkt für die Formularübermittlung
-  - Standard: `https://api.hallopetra.de/api/web-widget/request-call`
+**Wichtig**: Das `data-customer-id` Attribut ist erforderlich. Ohne dieses wird das Widget eine Fehlermeldung anzeigen, wenn versucht wird, das Formular abzusenden.
 
 ### Anpassung
 
@@ -81,6 +73,12 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
 
   document.addEventListener('DOMContentLoaded', function() {
     const widget = ContactWidget.init({
+      // Erforderliche Parameter
+      customerId: 'ihre-kunden-id', // Ihre eindeutige Kundenkennung (erforderlich)
+      
+      // API-Konfiguration
+      apiUrl: 'https://api.hallopetra.de/web-widget/request-call', // API-Endpunkt für Anrufanfragen
+      
       // Button- und Sprechblasenanpassung
       logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Benutzerdefiniertes Logo für den Button
       speechBubbleText: 'Wie darf ich Ihnen helfen?', // Text in der Sprechblase
@@ -95,9 +93,28 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
       namePlaceholder: 'Ihr Name', // Platzhalter für die Namenseingabe
       phonePlaceholder: 'Ihre Telefonnummer', // Platzhalter für die Telefoneingabe
       
+      // Konfiguration optionaler Felder
+      extraInputFields: [
+        { 
+          type: "email", 
+          required: true, // Auf true setzen, wenn das Feld Pflicht ist
+          label: "E-Mail Adresse", // Benutzerdefinierte Bezeichnung
+          placeholder: "Ihre E-Mail eingeben" // Benutzerdefinierter Platzhalter
+        },
+        { 
+          type: "address", 
+          required: false, // Auf false setzen (oder weglassen) für optionale Felder
+          label: "Vollständige Adresse",
+          placeholder: "Straße, PLZ, Ort"
+        }
+      ],
+      
       // Button und Nachrichten
       submitText: 'Anruf bekommen', // Text für den Submit-Button
-      successMessage: 'Vielen Dank! Wir werden Sie in Kürze kontaktieren.', // Nachricht nach dem Absenden des Formulars
+      
+      // Erfolgsbildschirm-Anpassung
+      successTitle: 'Vielen Dank!', // Titel auf dem Erfolgsbildschirm
+      successMessage: 'Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren.', // Nachricht auf dem Erfolgsbildschirm
       
       // Anruf-Anpassung
       greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // Die Begrüßung, die der Assistent beim Anruf sagen wird
@@ -114,10 +131,10 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
         // data enthält: 
         // - name: Der Name des Benutzers
         // - phoneNumber: Die vollständige Telefonnummer im E.164-Format (z.B. +491234567890)
-        // - response: Die API-Antwortdaten
-        
-        // Hinweis: Das Widget sendet die Daten automatisch an den API-Endpunkt
-        // Dieser Callback wird nach erfolgreicher Übermittlung ausgeführt
+        // - email: Die E-Mail-Adresse (wenn angegeben und in extraInputFields konfiguriert)
+        // - address: Die Adresse (wenn angegeben und in extraInputFields konfiguriert)
+        // - success: Boolean, der angibt, ob die Übermittlung erfolgreich war
+        // - error: Fehlerobjekt, wenn success false ist
       }
     });
   });
@@ -130,8 +147,8 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
 <script 
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
-  data-company-record-id="IHRE_COMPANY_RECORD_ID"
-  data-api-url="https://ihre-custom-api.beispiel.de/endpunkt"
+  data-customer-id="ihre-kunden-id"
+  data-api-url="https://api.hallopetra.de/web-widget/request-call"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -141,11 +158,50 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
   data-name-placeholder="Ihr Name"
   data-phone-placeholder="Ihre Telefonnummer"
   data-submit-text="Anruf bekommen"
-  data-success-message="Vielen Dank! Wir werden Sie in Kürze kontaktieren."
+  data-success-title="Vielen Dank!"
+  data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
   data-agb-url="https://ihre-domain.de/agb"
   data-datenschutz-url="https://ihre-domain.de/datenschutz"
+  data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
+```
+
+### Optionale zusätzliche Felder
+
+Das Widget unterstützt zusätzliche optionale Felder über die `extraInputFields`-Konfiguration:
+
+```javascript
+extraInputFields: [
+  { 
+    type: "email", 
+    required: true, // Macht das Feld zur Pflichtangabe
+    label: "E-Mail Adresse", // Benutzerdefinierte Bezeichnung
+    placeholder: "Ihre E-Mail eingeben" // Benutzerdefinierter Platzhalter
+  },
+  { 
+    type: "address", 
+    required: false, // Optionales Feld
+    label: "Vollständige Adresse", 
+    placeholder: "Straße, PLZ, Ort"
+  }
+]
+```
+
+Derzeit unterstützte Feldtypen:
+- `email`: Fügt ein E-Mail-Eingabefeld mit Validierung hinzu
+- `address`: Fügt ein Texteingabefeld für Adressinformationen hinzu
+
+Jedes Feld kann mit folgenden Optionen konfiguriert werden:
+- `type`: Der Typ des Feldes (erforderlich)
+- `required`: Ob das Feld verpflichtend ist (Standard: false)
+- `label`: Benutzerdefinierter Bezeichnungstext
+- `placeholder`: Benutzerdefinierter Platzhaltertext
+
+Bei Verwendung von Datenattributen übergeben Sie die Konfiguration als JSON-String:
+
+```html
+data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ```
 
 ### Verhalten der Sprechblase
@@ -228,7 +284,14 @@ Das Widget enthält die folgenden Validierungsfunktionen:
    - Deutschland (+49): 10-11 Ziffern
    - Österreich (+43): 9-10 Ziffern
    - Schweiz (+41): 9 Ziffern
-3. **E.164-Format**: Formatiert die Telefonnummer automatisch nach dem E.164-Standard
+   - **Automatische Formatierung**: Führende Nullen und Bindestriche werden automatisch entfernt
+   - Visuelle Rückmeldung bei angewendeter Formatierung
+3. **E-Mail-Validierung** (falls aktiviert):
+   - Überprüft das Standard-E-Mail-Format mit @ und Domain
+   - Validiert nur, wenn das Feld erforderlich ist oder Inhalt hat
+4. **Adressvalidierung** (falls aktiviert):
+   - Erfordert mindestens 5 Zeichen, wenn das Feld erforderlich ist oder Inhalt hat
+5. **E.164-Format**: Formatiert die Telefonnummer automatisch nach dem E.164-Standard
 
 Der Submit-Button bleibt deaktiviert, bis alle Validierungen bestanden sind, aber Fehlermeldungen werden erst angezeigt, nachdem der Benutzer versucht hat, das Formular abzusenden.
 
@@ -252,6 +315,8 @@ widget.hideSpeechBubble();
 // Widget-Konfiguration aktualisieren
 widget.updateConfig({
   speechBubbleText: 'Neuer Sprechblasentext',
+  successTitle: 'Vielen Dank für Ihre Anfrage!',
+  successMessage: 'Unser Team wird Sie in Kürze kontaktieren.',
   greetingText: 'Hallo, hier ist Petra von HalloPetra. Sie haben kürzlich über unsere Website um einen Rückruf gebeten.'
 });
 ```
@@ -277,6 +342,19 @@ Das Kontaktformular-Widget ist kompatibel mit:
 - Opera (neueste Version)
 - Mobile Browser (iOS Safari, Android Chrome)
 
+## Testen
+
+Um zu testen, ob Ihr Widget richtig konfiguriert ist:
+
+1. Stellen Sie sicher, dass Sie Ihre `customerId` in der Konfiguration angegeben haben
+2. Klicken Sie auf den Widget-Button, um das Formular zu öffnen
+3. Geben Sie einen gültigen Namen und eine gültige Telefonnummer ein
+4. Wenn Sie zusätzliche Felder konfiguriert haben, füllen Sie auch diese aus
+5. Senden Sie das Formular ab
+6. Sie sollten den Erfolgsbildschirm sehen, wenn alles richtig konfiguriert ist
+
+Wenn Sie eine Fehlermeldung bezüglich einer fehlenden Kunden-ID sehen, überprüfen Sie, ob Sie den Parameter `customerId` in Ihrer Konfiguration oder das Attribut `data-customer-id` in Ihrem Script-Tag angegeben haben.
+
 ## Lizenz
 
 MIT 
@@ -285,7 +363,7 @@ MIT
 
 Das Widget sendet Formulardaten automatisch an den in Ihrer Konfiguration angegebenen API-Endpunkt:
 ```
-https://api.hallopetra.de/api/web-widget/request-call
+https://api.hallopetra.de/web-widget/request-call
 ```
 Dies ist der Standard-Endpunkt, aber Sie können einen benutzerdefinierten Endpunkt mit dem Parameter `apiUrl` konfigurieren.
 
@@ -296,7 +374,9 @@ Die Daten werden als JSON-Objekt mit der folgenden Struktur gesendet:
   "companyRecordId": "IHRE_COMPANY_RECORD_ID",
   "name": "Name des Benutzers",
   "phone": "+491234567890",
-  "greetingText": "Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
+  "greetingText": "Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.",
+  "email": "benutzer@beispiel.de",
+  "address": "Adressdaten des Benutzers"
 }
 ```
 
@@ -305,6 +385,10 @@ Wobei:
 - `name` der Name des Benutzers aus dem Formular ist
 - `phone` die vollständige Telefonnummer im E.164-Format ist
 - `greetingText` die Begrüßung, die der Assistent beim Anruf sagen wird
+- `email` die E-Mail-Adresse des Benutzers (wenn über extraInputFields konfiguriert und vom Benutzer angegeben)
+- `address` die Adressdaten des Benutzers (wenn über extraInputFields konfiguriert und vom Benutzer angegeben)
+
+Die Felder `email` und `address` werden nur in die Anfrage aufgenommen, wenn sie über `extraInputFields` konfiguriert wurden und der Benutzer Werte dafür angegeben hat.
 
 ### Antwortverarbeitung
 Das Widget verarbeitet sowohl erfolgreiche als auch fehlgeschlagene API-Antworten:

@@ -170,6 +170,27 @@ function injectStyles() {
       margin-top: 4px;
     }
 
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-sizing: border-box;
+      background-color: #f8fafc;
+      transition: all 0.2s ease;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #93c5fd;
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+    }
+
     .phone-input-container {
       display: flex;
       gap: 8px;
@@ -454,6 +475,79 @@ function createWidgetElements(config) {
   phoneGroup.appendChild(phoneInputContainer);
   phoneGroup.appendChild(phoneError);
 
+  // Initialize arrays to store extra fields
+  const extraFields = [];
+  const emailGroup = { element: null, input: null };
+  const addressGroup = { element: null, input: null };
+
+  // Create additional fields if extraInputFields are configured
+  if (config.extraInputFields && Array.isArray(config.extraInputFields)) {
+    config.extraInputFields.forEach(field => {
+      if (!field.type) return;
+
+      if (field.type.toLowerCase() === 'email') {
+        // Create email field
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        group.id = 'email-group';
+
+        const label = document.createElement('label');
+        label.htmlFor = 'email';
+        // Use label from the field object, fallback to config, or default
+        label.textContent = field.label || config.emailLabel || 'E-Mail';
+
+        const input = document.createElement('input');
+        input.type = 'email';
+        input.id = 'email';
+        input.name = 'email';
+        // Use placeholder from the field object, fallback to config, or default
+        input.placeholder = field.placeholder || config.emailPlaceholder || 'Ihre E-Mail-Adresse';
+        input.required = !!field.required;
+
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'error-message';
+
+        group.appendChild(label);
+        group.appendChild(input);
+        group.appendChild(errorMsg);
+
+        extraFields.push({ type: 'email', element: group, input, required: !!field.required });
+        emailGroup.element = group;
+        emailGroup.input = input;
+      }
+      else if (field.type.toLowerCase() === 'address') {
+        // Create address field
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        group.id = 'address-group';
+
+        const label = document.createElement('label');
+        label.htmlFor = 'address';
+        // Use label from the field object, fallback to config, or default
+        label.textContent = field.label || config.addressLabel || 'Adresse';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'address';
+        input.name = 'address';
+        // Use placeholder from the field object, fallback to config, or default
+        input.placeholder = field.placeholder || config.addressPlaceholder || 'Ihre Adresse';
+        input.required = !!field.required;
+
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'error-message';
+
+        group.appendChild(label);
+        group.appendChild(input);
+        group.appendChild(errorMsg);
+
+        extraFields.push({ type: 'address', element: group, input, required: !!field.required });
+        addressGroup.element = group;
+        addressGroup.input = input;
+      }
+    });
+  }
+
   // Create compliance text
   const complianceText = document.createElement('div');
   complianceText.className = 'compliance-text';
@@ -488,6 +582,12 @@ function createWidgetElements(config) {
   // Assemble form
   form.appendChild(nameGroup);
   form.appendChild(phoneGroup);
+
+  // Add extra fields if they exist
+  extraFields.forEach(field => {
+    form.appendChild(field.element);
+  });
+
   form.appendChild(complianceText);
   form.appendChild(submitBtn);
 
@@ -561,7 +661,10 @@ function createWidgetElements(config) {
     phoneGroup,
     speechBubble,
     contactFormContainer,
-    successScreen
+    successScreen,
+    extraFields,
+    emailGroup,
+    addressGroup
   };
 }
 
@@ -580,7 +683,10 @@ function initWidgetBehavior(elements, config) {
     phoneGroup,
     speechBubble,
     contactFormContainer,
-    successScreen
+    successScreen,
+    extraFields,
+    emailGroup,
+    addressGroup
   } = elements;
 
   // Track if form has been submitted
@@ -638,6 +744,73 @@ function initWidgetBehavior(elements, config) {
     } else {
       nameGroup.classList.remove('invalid');
       nameErrorMsg.textContent = '';
+      return true;
+    }
+  }
+
+  // Validate email input
+  function validateEmail() {
+    // If email field doesn't exist, skip validation
+    if (!emailGroup.element || !emailGroup.input) {
+      return true;
+    }
+
+    const email = emailGroup.input.value.trim();
+    const emailErrorMsg = emailGroup.element.querySelector('.error-message');
+    const isRequired = emailGroup.input.required;
+
+    // If field is not required and is empty, it's valid
+    if (!isRequired && email === '') {
+      emailGroup.element.classList.remove('invalid');
+      emailErrorMsg.textContent = '';
+      return true;
+    }
+
+    // Email regex pattern for basic validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailPattern.test(email);
+
+    if (!isValid) {
+      if (formSubmitted) {
+        emailGroup.element.classList.add('invalid');
+        emailErrorMsg.textContent = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
+      }
+      return false;
+    } else {
+      emailGroup.element.classList.remove('invalid');
+      emailErrorMsg.textContent = '';
+      return true;
+    }
+  }
+
+  // Validate address input
+  function validateAddress() {
+    // If address field doesn't exist, skip validation
+    if (!addressGroup.element || !addressGroup.input) {
+      return true;
+    }
+
+    const address = addressGroup.input.value.trim();
+    const addressErrorMsg = addressGroup.element.querySelector('.error-message');
+    const isRequired = addressGroup.input.required;
+
+    // If field is not required and is empty, it's valid
+    if (!isRequired && address === '') {
+      addressGroup.element.classList.remove('invalid');
+      addressErrorMsg.textContent = '';
+      return true;
+    }
+
+    // Simple validation - just check for minimum length
+    if (address.length < 5) {
+      if (formSubmitted) {
+        addressGroup.element.classList.add('invalid');
+        addressErrorMsg.textContent = 'Bitte geben Sie eine gültige Adresse ein.';
+      }
+      return false;
+    } else {
+      addressGroup.element.classList.remove('invalid');
+      addressErrorMsg.textContent = '';
       return true;
     }
   }
@@ -731,8 +904,11 @@ function initWidgetBehavior(elements, config) {
   function updateSubmitButtonState() {
     const isNameValid = validateName();
     const isPhoneValid = validatePhone();
+    const isEmailValid = validateEmail();
+    const isAddressValid = validateAddress();
 
-    submitBtn.disabled = !(isNameValid && isPhoneValid);
+    // Check if all validations pass
+    submitBtn.disabled = !(isNameValid && isPhoneValid && isEmailValid && isAddressValid);
   }
 
   // Add input event listeners for validation
@@ -745,6 +921,15 @@ function initWidgetBehavior(elements, config) {
   });
 
   countrySelect.addEventListener('change', updateSubmitButtonState);
+
+  // Add validation for email and address fields if they exist
+  if (emailGroup.input) {
+    emailGroup.input.addEventListener('input', updateSubmitButtonState);
+  }
+
+  if (addressGroup.input) {
+    addressGroup.input.addEventListener('input', updateSubmitButtonState);
+  }
 
   // Handle form submission
   form.addEventListener('submit', function (event) {
@@ -759,8 +944,10 @@ function initWidgetBehavior(elements, config) {
     // Run validation with visual feedback
     const isNameValid = validateName();
     const isPhoneValid = validatePhone();
+    const isEmailValid = validateEmail();
+    const isAddressValid = validateAddress();
 
-    if (!isNameValid || !isPhoneValid) {
+    if (!isNameValid || !isPhoneValid || !isEmailValid || !isAddressValid) {
       return;
     }
 
@@ -781,6 +968,25 @@ function initWidgetBehavior(elements, config) {
     // Format phone number in E.164 format (country code + number without leading zero)
     const e164PhoneNumber = `${countryCode}${phoneNumber}`;
 
+    // Prepare request data
+    const requestData = {
+      name: name,
+      phone: e164PhoneNumber,
+      customerId: config.customerId,
+      url: window.location.href, // Include the current page URL
+      userAgent: navigator.userAgent, // Include user agent for analytics
+      greetingText: config.greetingText
+    };
+
+    // Add email and address if they exist and have values
+    if (emailGroup.input && emailGroup.input.value.trim()) {
+      requestData.email = emailGroup.input.value.trim();
+    }
+
+    if (addressGroup.input && addressGroup.input.value.trim()) {
+      requestData.address = addressGroup.input.value.trim();
+    }
+
     // Disable submit button and show loading state
     submitBtn.disabled = true;
     submitBtn.textContent = 'Wird gesendet...';
@@ -794,14 +1000,7 @@ function initWidgetBehavior(elements, config) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        name: name,
-        phone: e164PhoneNumber,
-        customerId: config.customerId,
-        url: window.location.href, // Include the current page URL
-        userAgent: navigator.userAgent, // Include user agent for analytics
-        greetingText: config.greetingText
-      }),
+      body: JSON.stringify(requestData),
       signal: controller.signal
     })
       .then(response => {
@@ -815,7 +1014,13 @@ function initWidgetBehavior(elements, config) {
 
         // Call the handler function if provided
         if (typeof config.onSubmit === 'function') {
-          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: true });
+          config.onSubmit({
+            name,
+            phoneNumber: e164PhoneNumber,
+            email: requestData.email,
+            address: requestData.address,
+            success: true
+          });
         }
 
         // Show success screen
@@ -827,7 +1032,14 @@ function initWidgetBehavior(elements, config) {
 
         // Call the handler function if provided
         if (typeof config.onSubmit === 'function') {
-          config.onSubmit({ name, phoneNumber: e164PhoneNumber, success: false, error });
+          config.onSubmit({
+            name,
+            phoneNumber: e164PhoneNumber,
+            email: requestData.email,
+            address: requestData.address,
+            success: false,
+            error
+          });
         }
 
         // Show error in UI
@@ -857,7 +1069,7 @@ function initWidgetBehavior(elements, config) {
 // Initialize the contact widget
 function initContactWidget(config = {}) {
   // Set default API URL if not provided
-  config.apiUrl = config.apiUrl || 'https://api.hallopetra.de/api/web-widget/request-call';
+  config.apiUrl = config.apiUrl || 'https://api.hallopetra.de/web-widget/request-call';
 
   // Check if customerId is provided
   const missingCustomerId = !config.customerId;
@@ -893,6 +1105,32 @@ function initContactWidget(config = {}) {
   //     }, 10000);
   //   }
   // }
+
+  // Process extraInputFields if provided as a string (from data attribute)
+  if (typeof config.extraInputFields === 'string') {
+    try {
+      config.extraInputFields = JSON.parse(config.extraInputFields);
+    } catch (e) {
+      console.error('ContactWidget: Error parsing extraInputFields. It should be a valid JSON array.');
+      config.extraInputFields = [];
+    }
+  }
+
+  // Example extraInputFields structure:
+  // extraInputFields: [
+  //   { 
+  //     type: "email",
+  //     required: true,
+  //     label: "E-Mail Adresse",   // Optional: custom label
+  //     placeholder: "Ihre E-Mail" // Optional: custom placeholder
+  //   },
+  //   { 
+  //     type: "address",
+  //     required: false,
+  //     label: "Ihre Adresse",     // Optional: custom label
+  //     placeholder: "Straße, PLZ, Ort" // Optional: custom placeholder
+  //   }
+  // ]
 
   // Inject CSS
   injectStyles();
@@ -999,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
       'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
-      'greetingText'
+      'greetingText', 'extraInputFields', 'emailLabel', 'emailPlaceholder', 'addressLabel', 'addressPlaceholder'
     ];
 
     configAttributes.forEach(attr => {

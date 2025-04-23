@@ -9,6 +9,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 - Customizable appearance and text
 - Interactive speech bubble that appears after 5 seconds and disappears after 30 seconds
 - Country selection for phone numbers (Germany, Austria, Switzerland)
+- Optional email and address fields
 - Input validation with helpful error messages (only shown after form submission)
 - Success screen with "Powered by HalloPetra" attribution
 - Compliance text with customizable links to terms and privacy policy
@@ -78,7 +79,7 @@ You can customize the widget by passing configuration options:
       customerId: 'your-customer-id', // Your unique customer ID (required)
       
       // API configuration
-      apiUrl: 'https://api.hallopetra.de/api/web-widget/request-call', // API endpoint for call requests
+      apiUrl: 'https://api.hallopetra.de/web-widget/request-call', // API endpoint for call requests
       
       // Button and speech bubble customization
       logoSrc: 'https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png', // Custom logo for the button
@@ -93,6 +94,22 @@ You can customize the widget by passing configuration options:
       phoneLabel: 'Telefonnummer', // Label for the phone field
       namePlaceholder: 'Ihr Name', // Placeholder for name input
       phonePlaceholder: 'Ihre Telefonnummer', // Placeholder for phone input
+      
+      // Optional fields configuration
+      extraInputFields: [
+        { 
+          type: "email", 
+          required: true, // Set to true if field is mandatory
+          label: "E-Mail Adresse", // Custom label for the field
+          placeholder: "Ihre E-Mail eingeben" // Custom placeholder
+        },
+        { 
+          type: "address", 
+          required: false, // Set to false (or omit) for optional field
+          label: "Vollständige Adresse",
+          placeholder: "Straße, PLZ, Ort"
+        }
+      ],
       
       // Button and messages
       submitText: 'Anruf bekommen', // Text for the submit button
@@ -116,6 +133,8 @@ You can customize the widget by passing configuration options:
         // data contains: 
         // - name: The user's name
         // - phoneNumber: The full phone number in E.164 format (e.g. +491234567890)
+        // - email: The user's email address (if provided and included in extraInputFields)
+        // - address: The user's address (if provided and included in extraInputFields)
         // - success: Boolean indicating if the submission was successful
         // - error: Error object if success is false
       }
@@ -131,7 +150,7 @@ You can also use data attributes for basic configuration:
   src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/dist/assets/index.js" 
   data-contact-widget-auto-init
   data-customer-id="your-customer-id"
-  data-api-url="https://api.hallopetra.de/api/web-widget/request-call"
+  data-api-url="https://api.hallopetra.de/web-widget/request-call"
   data-logo-src="https://cdn.jsdelivr.net/gh/HalloPetra/html-script-tag@latest/assets/logo.png"
   data-speech-bubble-text="Wie darf ich Ihnen helfen?"
   data-form-title="Wir rufen Sie zurück"
@@ -146,7 +165,45 @@ You can also use data attributes for basic configuration:
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
   data-agb-url="https://your-domain.com/agb"
   data-datenschutz-url="https://your-domain.com/datenschutz"
+  data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
+```
+
+### Optional Extra Fields
+
+The widget supports additional optional fields through the `extraInputFields` configuration:
+
+```javascript
+extraInputFields: [
+  { 
+    type: "email", 
+    required: true, // Makes the field mandatory
+    label: "E-Mail Adresse", // Custom label
+    placeholder: "Ihre E-Mail eingeben" // Custom placeholder
+  },
+  { 
+    type: "address", 
+    required: false, // Optional field
+    label: "Vollständige Adresse", 
+    placeholder: "Straße, PLZ, Ort"
+  }
+]
+```
+
+Currently supported field types:
+- `email`: Adds an email input field with validation
+- `address`: Adds a text input field for address information
+
+Each field can be configured with:
+- `type`: The type of field (required)
+- `required`: Whether the field is mandatory (default: false)
+- `label`: Custom label text
+- `placeholder`: Custom placeholder text
+
+When using data attributes, pass the configuration as a JSON string:
+
+```html
+data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ```
 
 ### Required Parameters
@@ -157,7 +214,7 @@ The widget requires the following parameter:
 
 ### API Integration
 
-The widget automatically sends form data to the HalloPetra API when a user submits the form. The data is sent to `https://api.hallopetra.de/api/web-widget/request-call` with the following payload:
+The widget automatically sends form data to the HalloPetra API when a user submits the form. The data is sent to `https://api.hallopetra.de/web-widget/request-call` with the following payload:
 
 ```json
 {
@@ -166,9 +223,13 @@ The widget automatically sends form data to the HalloPetra API when a user submi
   "customerId": "your-customer-id",
   "url": "Current page URL",
   "userAgent": "Browser user agent",
-  "greetingText": "Hello, this is Petra from HalloPetra. You recently requested a call back through our website."
+  "greetingText": "Hello, this is Petra from HalloPetra. You recently requested a call back through our website.",
+  "email": "user@example.com",
+  "address": "User's address details"
 }
 ```
+
+The `email` and `address` fields are only included if they are configured via `extraInputFields` and the user provides values.
 
 If the submission is successful, the success screen will be displayed. If the API responds with a message, it will be shown in the success screen.
 
@@ -256,7 +317,12 @@ The widget includes the following validation features:
    - Switzerland (+41): 9 digits
    - **Automatic formatting**: Leading zeros and hyphens are automatically removed
    - Visual feedback when formatting is applied
-3. **E.164 format**: Automatically formats the phone number to E.164 standard
+3. **Email validation** (if enabled):
+   - Validates standard email format with @ and domain
+   - Only validates if field is required or has content
+4. **Address validation** (if enabled):
+   - Requires at least 5 characters if field is required or has content
+5. **E.164 format**: Automatically formats the phone number to E.164 standard
 
 The submit button remains disabled until all validations pass, but error messages are only shown after the user attempts to submit the form.
 
@@ -314,8 +380,9 @@ To test if your widget is properly configured:
 1. Make sure you've included your `customerId` in the configuration
 2. Click the widget button to open the form
 3. Fill in a valid name and phone number
-4. Submit the form
-5. You should see the success screen if everything is configured correctly
+4. If you've configured extra fields, fill those in as well
+5. Submit the form
+6. You should see the success screen if everything is configured correctly
 
 If you see an error message about a missing customer ID, check that you've included the `customerId` parameter in your configuration or the `data-customer-id` attribute in your script tag.
 
@@ -327,7 +394,7 @@ MIT
 
 The widget automatically submits form data to the API endpoint specified in your configuration:
 ```
-https://api.hallopetra.de/api/web-widget/request-call
+https://api.hallopetra.de/web-widget/request-call
 ```
 This is the default endpoint, but you can configure a custom endpoint using the `apiUrl` parameter.
 
