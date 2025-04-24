@@ -12,7 +12,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 - Optional email and address fields
 - Input validation with helpful error messages (only shown after form submission)
 - Success screen with "Powered by HalloPetra" attribution
-- Compliance text with customizable links to terms and privacy policy
+- Optional hint text with customizable link
 - Form description to set clear expectations
 - Responsive and mobile-friendly
 - Disabled submit button until valid input is provided
@@ -121,9 +121,10 @@ You can customize the widget by passing configuration options:
       // Call customization
       greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // The greeting the assistant will say when calling
       
-      // Legal links
-      agbUrl: 'https://your-domain.com/agb', // URL to your terms and conditions
-      datenschutzUrl: 'https://your-domain.com/datenschutz', // URL to your privacy policy
+      // Hint text customization (completely optional)
+      hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: hint text displayed before submit button (if not provided, no hint will be shown)
+      hintLinkText: 'Mehr erfahren', // Optional: Text for the link after hint text
+      hintLinkUrl: 'https://your-domain.com/terms', // Optional: URL for the hint text link
       
       // Callbacks
       onSubmit: function(data) {
@@ -163,8 +164,9 @@ You can also use data attributes for basic configuration:
   data-success-title="Vielen Dank!"
   data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
-  data-agb-url="https://your-domain.com/agb"
-  data-datenschutz-url="https://your-domain.com/datenschutz"
+  data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
+  data-hint-link-text="Mehr erfahren"
+  data-hint-link-url="https://your-domain.com/terms"
   data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
 ```
@@ -258,7 +260,7 @@ The widget uses the Inter font family and a clean, modern design with:
 - A circular light blue (#E1EFFE) button displaying only the Petra logo
 - A friendly speech bubble that appears after 5 seconds
 - Form fields with validation and error messages (only shown after submission attempt)
-- A compliance text section with legal links
+- An optional hint text section with customizable content and link
 - Disabled submit button until form validation passes
 - Country code dropdown for phone numbers
 
@@ -299,123 +301,8 @@ If you want to further customize the appearance, you can add custom CSS to your 
   background-color: #your-color !important;
 }
 
-/* Customize compliance text */
-.compliance-text a {
+/* Customize hint text */
+.hint-text a {
   color: #your-color !important;
 }
 ```
-
-### Validation Features
-
-The widget includes the following validation features:
-
-1. **Name validation**: Requires at least 2 characters
-2. **Phone number validation**:
-   - Specific rules for each country code
-   - Germany (+49): 10-11 digits
-   - Austria (+43): 9-10 digits
-   - Switzerland (+41): 9 digits
-   - **Automatic formatting**: Leading zeros and hyphens are automatically removed
-   - Visual feedback when formatting is applied
-3. **Email validation** (if enabled):
-   - Validates standard email format with @ and domain
-   - Only validates if field is required or has content
-4. **Address validation** (if enabled):
-   - Requires at least 5 characters if field is required or has content
-5. **E.164 format**: Automatically formats the phone number to E.164 standard
-
-The submit button remains disabled until all validations pass, but error messages are only shown after the user attempts to submit the form.
-
-### API Methods
-
-The widget object returned by `ContactWidget.init()` provides the following methods:
-
-```javascript
-// Show the popup programmatically
-widget.showPopup();
-
-// Hide the popup programmatically
-widget.hidePopup();
-
-// Show the speech bubble programmatically
-widget.showSpeechBubble();
-
-// Hide the speech bubble programmatically
-widget.hideSpeechBubble();
-
-// Update widget configuration
-widget.updateConfig({
-  speechBubbleText: 'New speech bubble text',
-  successTitle: 'Thank you for your request!',
-  successMessage: 'Our team will contact you shortly.',
-  greetingText: 'Hello, this is Petra from HalloPetra. You recently requested a call back through our website.'
-});
-```
-
-## Building from Source
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Build the project: `npm run build`
-4. The built files will be in the `dist` directory
-
-## Demo
-
-Open the `index.html` file in your browser to see a demo of the contact form widget.
-
-## Browser Compatibility
-
-The contact form widget is compatible with:
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Opera (latest)
-- Mobile browsers (iOS Safari, Android Chrome)
-
-## Testing
-
-To test if your widget is properly configured:
-
-1. Make sure you've included your `customerId` in the configuration
-2. Click the widget button to open the form
-3. Fill in a valid name and phone number
-4. If you've configured extra fields, fill those in as well
-5. Submit the form
-6. You should see the success screen if everything is configured correctly
-
-If you see an error message about a missing customer ID, check that you've included the `customerId` parameter in your configuration or the `data-customer-id` attribute in your script tag.
-
-## License
-
-MIT
-
-## API Integration
-
-The widget automatically submits form data to the API endpoint specified in your configuration:
-```
-https://api.hallopetra.de/web-widget/request-call
-```
-This is the default endpoint, but you can configure a custom endpoint using the `apiUrl` parameter.
-
-### Request Format
-The data is sent as a JSON object with the following structure:
-```json
-{
-  "companyRecordId": "YOUR_COMPANY_RECORD_ID",
-  "name": "User's name",
-  "phone": "+491234567890"
-}
-```
-
-Where:
-- `companyRecordId` is your unique company identifier (required)
-- `name` is the user's name from the form
-- `phone` is the full phone number in E.164 format
-
-### Response Handling
-The widget handles both successful and failed API responses:
-- On success: Displays the success screen to the user
-- On error: Still displays the success screen to provide a smooth user experience, but logs the error to the console
-
-You can customize the response handling by providing an `onSubmit` callback function.

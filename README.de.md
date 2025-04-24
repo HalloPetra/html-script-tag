@@ -12,7 +12,7 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 - Optionale E-Mail- und Adressfelder
 - Eingabevalidierung mit hilfreichen Fehlermeldungen (werden erst nach dem Absenden des Formulars angezeigt)
 - Erfolgsbildschirm mit "Bereitgestellt von HalloPetra"-Hinweis
-- Einwilligungstext mit anpassbaren Links zu AGB und Datenschutzerklärung
+- Optionaler Hinweistext mit anpassbarem Link
 - Formularbeschreibung zur klaren Erwartungssetzung
 - Responsiv und mobilgerätefreundlich
 - Deaktivierter Submit-Button bis gültige Eingaben vorliegen
@@ -119,9 +119,10 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
       // Anruf-Anpassung
       greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // Die Begrüßung, die der Assistent beim Anruf sagen wird
       
-      // Rechtliche Links
-      agbUrl: 'https://ihre-domain.de/agb', // URL zu Ihren AGB
-      datenschutzUrl: 'https://ihre-domain.de/datenschutz', // URL zu Ihrer Datenschutzerklärung
+      // Hinweistext-Anpassung (komplett optional)
+      hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: Hinweistext vor dem Submit-Button (wird nicht angezeigt, wenn nicht angegeben)
+      hintLinkText: 'Mehr erfahren', // Optional: Text für den Link nach dem Hinweistext
+      hintLinkUrl: 'https://ihre-domain.de/nutzungsbedingungen', // Optional: URL für den Hinweistext-Link
       
       // Callbacks
       onSubmit: function(data) {
@@ -161,8 +162,9 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
   data-success-title="Vielen Dank!"
   data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
-  data-agb-url="https://ihre-domain.de/agb"
-  data-datenschutz-url="https://ihre-domain.de/datenschutz"
+  data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
+  data-hint-link-text="Mehr erfahren"
+  data-hint-link-url="https://ihre-domain.de/nutzungsbedingungen"
   data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
 ```
@@ -227,7 +229,7 @@ Das Widget verwendet die Inter-Schriftfamilie und ein klares, modernes Design mi
 - Einem kreisförmigen hellblauen (#E1EFFE) Button, der nur das Petra-Logo zeigt
 - Einer freundlichen Sprechblase, die nach 5 Sekunden erscheint
 - Formularfeldern mit Validierung und Fehlermeldungen (werden erst nach dem Versuch des Absendens angezeigt)
-- Einem Einwilligungstext-Bereich mit rechtlichen Links
+- Einem optionalen Hinweistext-Bereich mit anpassbarem Inhalt und Link
 - Deaktiviertem Submit-Button bis die Formularvalidierung bestanden ist
 - Ländervorwahl-Dropdown für Telefonnummern
 
@@ -268,8 +270,8 @@ Wenn Sie das Erscheinungsbild weiter anpassen möchten, können Sie benutzerdefi
   background-color: #ihre-farbe !important;
 }
 
-/* Einwilligungstext anpassen */
-.compliance-text a {
+/* Hinweistext anpassen */
+.hint-text a {
   color: #ihre-farbe !important;
 }
 ```
@@ -353,7 +355,7 @@ Um zu testen, ob Ihr Widget richtig konfiguriert ist:
 5. Senden Sie das Formular ab
 6. Sie sollten den Erfolgsbildschirm sehen, wenn alles richtig konfiguriert ist
 
-Wenn Sie eine Fehlermeldung bezüglich einer fehlenden Kunden-ID sehen, überprüfen Sie, ob Sie den Parameter `customerId` in Ihrer Konfiguration oder das Attribut `data-customer-id` in Ihrem Script-Tag angegeben haben.
+Wenn Sie eine Fehlermeldung bezüglich einer fehlenden Kunden-ID sehen, überprüfen Sie, ob Sie den Parameter `customerId` in Ihrer Konfiguration angegeben haben.
 
 ## Lizenz
 

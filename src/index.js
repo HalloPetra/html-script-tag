@@ -224,7 +224,7 @@ function injectStyles() {
       flex: 1;
     }
 
-    .compliance-text {
+    .hint-text {
       font-size: 12px;
       color: #64748b;
       margin-bottom: 16px;
@@ -232,12 +232,12 @@ function injectStyles() {
       font-family: 'Inter', sans-serif;
     }
 
-    .compliance-text a {
+    .hint-text a {
       color: #3b82f6;
       text-decoration: none;
     }
 
-    .compliance-text a:hover {
+    .hint-text a:hover {
       text-decoration: underline;
     }
 
@@ -548,29 +548,6 @@ function createWidgetElements(config) {
     });
   }
 
-  // Create compliance text
-  const complianceText = document.createElement('div');
-  complianceText.className = 'compliance-text';
-
-  // Create AGB link
-  const agbLink = document.createElement('a');
-  agbLink.href = config.agbUrl || 'https://hallopetra.de/agb';
-  agbLink.target = '_blank';
-  agbLink.textContent = 'AGB';
-
-  // Create Datenschutz link
-  const datenschutzLink = document.createElement('a');
-  datenschutzLink.href = config.datenschutzUrl || 'https://hallopetra.de/datenschutz';
-  datenschutzLink.target = '_blank';
-  datenschutzLink.textContent = 'Datenschutzbedingungen';
-
-  // Set the compliance text with links
-  complianceText.innerHTML = `Mit dem Absenden stimmen Sie unseren `;
-  complianceText.appendChild(agbLink);
-  complianceText.appendChild(document.createTextNode(' und '));
-  complianceText.appendChild(datenschutzLink);
-  complianceText.appendChild(document.createTextNode(' zu.'));
-
   // Create submit button
   const submitBtn = document.createElement('button');
   submitBtn.type = 'submit';
@@ -588,7 +565,34 @@ function createWidgetElements(config) {
     form.appendChild(field.element);
   });
 
-  form.appendChild(complianceText);
+  // Create hint text only if hintText is provided (position it right before the submit button)
+  if (config.hintText) {
+    const hintText = document.createElement('div');
+    hintText.className = 'hint-text';
+
+    // Set the hint text content
+    hintText.textContent = config.hintText;
+
+    // Add optional link after hint text
+    if (config.hintLinkText && config.hintLinkUrl) {
+      // Create space after hint text
+      hintText.appendChild(document.createTextNode(' '));
+
+      // Create optional link
+      const hintLink = document.createElement('a');
+      hintLink.href = config.hintLinkUrl;
+      hintLink.target = '_blank';
+      hintLink.textContent = config.hintLinkText;
+
+      // Add link to hint text
+      hintText.appendChild(hintLink);
+    }
+
+    // Add hint text to form
+    form.appendChild(hintText);
+  }
+
+  // Add submit button as the last element
   form.appendChild(submitBtn);
 
   // Add form elements to contact form container
@@ -1236,8 +1240,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const configAttributes = [
       'buttonText', 'formTitle', 'nameLabel', 'phoneLabel', 'submitText', 'successMessage',
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
-      'agbUrl', 'datenschutzUrl', 'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
-      'greetingText', 'extraInputFields', 'emailLabel', 'emailPlaceholder', 'addressLabel', 'addressPlaceholder'
+      'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
+      'greetingText', 'extraInputFields', 'emailLabel', 'emailPlaceholder', 'addressLabel', 'addressPlaceholder',
+      'hintText', 'hintLinkText', 'hintLinkUrl'
     ];
 
     configAttributes.forEach(attr => {
