@@ -105,6 +105,8 @@ function injectStyles() {
       border-radius: 12px;
       padding: 24px 24px 16px 24px;
       width: 320px;
+      max-height: 80vh;
+      overflow-y: auto;
       font-family: 'Inter', sans-serif;
       z-index: 9999;
     }
@@ -982,6 +984,11 @@ function initWidgetBehavior(elements, config) {
       greetingText: config.greetingText
     };
 
+    // Add outgoingPhoneNumber if provided
+    if (config.outgoingPhoneNumber) {
+      requestData.outgoingPhoneNumber = config.outgoingPhoneNumber;
+    }
+
     // Add email and address if they exist and have values
     if (emailGroup.input && emailGroup.input.value.trim()) {
       requestData.email = emailGroup.input.value.trim();
@@ -1242,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
       'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
       'greetingText', 'extraInputFields', 'emailLabel', 'emailPlaceholder', 'addressLabel', 'addressPlaceholder',
-      'hintText', 'hintLinkText', 'hintLinkUrl'
+      'hintText', 'hintLinkText', 'hintLinkUrl', 'outgoingPhoneNumber'
     ];
 
     configAttributes.forEach(attr => {

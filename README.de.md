@@ -119,6 +119,9 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
       // Anruf-Anpassung
       greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // Die Begrüßung, die der Assistent beim Anruf sagen wird
       
+      // Telefonnummer-Konfiguration
+      outgoingPhoneNumber: '+49123456789', // Optional: Die Telefonnummer, von der aus der Anruf getätigt wird
+      
       // Hinweistext-Anpassung (komplett optional)
       hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: Hinweistext vor dem Submit-Button (wird nicht angezeigt, wenn nicht angegeben)
       hintLinkText: 'Mehr erfahren', // Optional: Text für den Link nach dem Hinweistext
@@ -162,6 +165,7 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
   data-success-title="Vielen Dank!"
   data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
+  data-outgoing-phone-number="+49123456789"
   data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
   data-hint-link-text="Mehr erfahren"
   data-hint-link-url="https://ihre-domain.de/nutzungsbedingungen"
@@ -377,6 +381,7 @@ Die Daten werden als JSON-Objekt mit der folgenden Struktur gesendet:
   "name": "Name des Benutzers",
   "phone": "+491234567890",
   "greetingText": "Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.",
+  "outgoingPhoneNumber": "+49123456789",
   "email": "benutzer@beispiel.de",
   "address": "Adressdaten des Benutzers"
 }
@@ -387,10 +392,11 @@ Wobei:
 - `name` der Name des Benutzers aus dem Formular ist
 - `phone` die vollständige Telefonnummer im E.164-Format ist
 - `greetingText` die Begrüßung, die der Assistent beim Anruf sagen wird
+- `outgoingPhoneNumber` die Telefonnummer ist, von der aus der Anruf getätigt wird
 - `email` die E-Mail-Adresse des Benutzers (wenn über extraInputFields konfiguriert und vom Benutzer angegeben)
 - `address` die Adressdaten des Benutzers (wenn über extraInputFields konfiguriert und vom Benutzer angegeben)
 
-Die Felder `email` und `address` werden nur in die Anfrage aufgenommen, wenn sie über `extraInputFields` konfiguriert wurden und der Benutzer Werte dafür angegeben hat.
+Das Feld `outgoingPhoneNumber` wird nur aufgenommen, wenn es konfiguriert wurde. Die Felder `email` und `address` werden nur in die Anfrage aufgenommen, wenn sie über `extraInputFields` konfiguriert wurden und der Benutzer Werte dafür angegeben hat.
 
 ### Antwortverarbeitung
 Das Widget verarbeitet sowohl erfolgreiche als auch fehlgeschlagene API-Antworten:

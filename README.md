@@ -121,6 +121,9 @@ You can customize the widget by passing configuration options:
       // Call customization
       greetingText: 'Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten.', // The greeting the assistant will say when calling
       
+      // Phone number configuration
+      outgoingPhoneNumber: '+49123456789', // Optional: The phone number from which the call will be made
+      
       // Hint text customization (completely optional)
       hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: hint text displayed before submit button (if not provided, no hint will be shown)
       hintLinkText: 'Mehr erfahren', // Optional: Text for the link after hint text
@@ -164,6 +167,7 @@ You can also use data attributes for basic configuration:
   data-success-title="Vielen Dank!"
   data-success-message="Wir werden Sie in Kürze unter der angegebenen Nummer kontaktieren."
   data-greeting-text="Hallo, mein Name ist Petra von HalloPetra. Sie haben gerade über unsere Website um einen Rückruf gebeten."
+  data-outgoing-phone-number="+49123456789"
   data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
   data-hint-link-text="Mehr erfahren"
   data-hint-link-url="https://your-domain.com/terms"
@@ -226,12 +230,13 @@ The widget automatically sends form data to the HalloPetra API when a user submi
   "url": "Current page URL",
   "userAgent": "Browser user agent",
   "greetingText": "Hello, this is Petra from HalloPetra. You recently requested a call back through our website.",
+  "outgoingPhoneNumber": "+49123456789",
   "email": "user@example.com",
   "address": "User's address details"
 }
 ```
 
-The `email` and `address` fields are only included if they are configured via `extraInputFields` and the user provides values.
+The `outgoingPhoneNumber` field is only included if it is configured. The `email` and `address` fields are only included if they are configured via `extraInputFields` and the user provides values.
 
 If the submission is successful, the success screen will be displayed. If the API responds with a message, it will be shown in the success screen.
 
