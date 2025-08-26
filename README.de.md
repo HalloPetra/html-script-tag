@@ -286,10 +286,7 @@ Das Widget enthält die folgenden Validierungsfunktionen:
 
 1. **Namensvalidierung**: Erfordert mindestens 2 Zeichen
 2. **Telefonnummernvalidierung**:
-   - Spezifische Regeln für jede Ländervorwahl
-   - Deutschland (+49): 10-11 Ziffern
-   - Österreich (+43): 9-10 Ziffern
-   - Schweiz (+41): 9 Ziffern
+   - Mindestens 6 Ziffern für alle Länder
    - **Automatische Formatierung**: Führende Nullen und Bindestriche werden automatisch entfernt
    - Visuelle Rückmeldung bei angewendeter Formatierung
 3. **E-Mail-Validierung** (falls aktiviert):

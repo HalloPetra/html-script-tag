@@ -847,12 +847,8 @@ function initWidgetBehavior(elements, config) {
 
     if (digitsOnly.length === 0) {
       errorMessage = 'Bitte geben Sie eine Telefonnummer ein.';
-    } else if (countryCode === '+49' && (digitsOnly.length < 10 || digitsOnly.length > 11)) {
-      errorMessage = 'Deutsche Telefonnummern müssen 10-11 Ziffern haben.';
-    } else if (countryCode === '+43' && (digitsOnly.length < 9 || digitsOnly.length > 10)) {
-      errorMessage = 'Österreichische Telefonnummern müssen 9-10 Ziffern haben.';
-    } else if (countryCode === '+41' && digitsOnly.length !== 9) {
-      errorMessage = 'Schweizer Telefonnummern müssen 9 Ziffern haben.';
+    } else if (digitsOnly.length < 6) {
+      errorMessage = 'Telefonnummern müssen mindestens 6 Ziffern haben.';
     } else {
       isValid = true;
     }
