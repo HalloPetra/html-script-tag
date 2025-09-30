@@ -5,7 +5,7 @@ A simple, customizable contact form widget that can be embedded on any website. 
 ## Features
 
 - Lightweight and easy to embed
-- Modern design with Inter font
+- Modern design with Inter font (or use system fonts for GDPR compliance)
 - Customizable appearance and text
 - Interactive speech bubble that appears after 5 seconds and disappears after 30 seconds
 - Country selection for phone numbers (Germany, Austria, Switzerland)
@@ -123,7 +123,10 @@ You can customize the widget by passing configuration options:
       
       // Phone number configuration
       outgoingPhoneNumber: '+49123456789', // Optional: The phone number from which the call will be made
-      
+
+      // Font configuration
+      use_system_font: true, // Optional: Set to true to use system fonts instead of Google Fonts (for GDPR compliance, default: false)
+
       // Hint text customization (completely optional)
       hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: hint text displayed before submit button (if not provided, no hint will be shown)
       hintLinkText: 'Mehr erfahren', // Optional: Text for the link after hint text
@@ -171,6 +174,7 @@ You can also use data attributes for basic configuration:
   data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
   data-hint-link-text="Mehr erfahren"
   data-hint-link-url="https://your-domain.com/terms"
+  data-use-system-font="true"
   data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
 ```
@@ -259,9 +263,28 @@ After submitting the form, a success screen is displayed with:
 - Information that the user will be contacted soon
 - A "Powered by HalloPetra" attribution with a link to the website
 
+### Font Configuration (GDPR Compliance)
+
+By default, the widget uses Google Fonts (Inter font family) for a modern appearance. However, if you have data privacy concerns (GDPR compliance), you can set `use_system_font: true` to use the system font stack instead. This completely avoids loading Google Fonts:
+
+```javascript
+ContactWidget.init({
+  customerId: "your-customer-id",
+  use_system_font: true // Avoids Google Fonts, uses system fonts instead
+});
+```
+
+When `use_system_font` is enabled, the widget will use:
+- System fonts on macOS (San Francisco)
+- Segoe UI on Windows
+- Roboto on Android
+- Arial as fallback
+
+This ensures no external font files are loaded from Google servers, addressing GDPR and data privacy requirements.
+
 ### Design Customization
 
-The widget uses the Inter font family and a clean, modern design with:
+The widget uses a clean, modern design with:
 - A circular light blue (#E1EFFE) button displaying only the Petra logo
 - A friendly speech bubble that appears after 5 seconds
 - Form fields with validation and error messages (only shown after submission attempt)

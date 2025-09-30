@@ -5,7 +5,7 @@ Ein einfaches, anpassbares Kontaktformular-Widget, das in jede Website eingebett
 ## Funktionen
 
 - Leichtgewichtig und einfach einzubetten
-- Modernes Design mit Inter-Schrift
+- Modernes Design mit Inter-Schrift (oder Systemschriften für DSGVO-Konformität)
 - Anpassbares Erscheinungsbild und Text
 - Interaktive Sprechblase, die nach 5 Sekunden erscheint und nach 30 Sekunden verschwindet
 - Länderauswahl für Telefonnummern (Deutschland, Österreich, Schweiz)
@@ -121,7 +121,10 @@ Sie können das Widget anpassen, indem Sie Konfigurationsoptionen übergeben:
       
       // Telefonnummer-Konfiguration
       outgoingPhoneNumber: '+49123456789', // Optional: Die Telefonnummer, von der aus der Anruf getätigt wird
-      
+
+      // Schrift-Konfiguration
+      use_system_font: true, // Optional: Auf true setzen, um Systemschriften anstelle von Google Fonts zu verwenden (für DSGVO-Konformität, Standard: false)
+
       // Hinweistext-Anpassung (komplett optional)
       hintText: 'Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu.', // Optional: Hinweistext vor dem Submit-Button (wird nicht angezeigt, wenn nicht angegeben)
       hintLinkText: 'Mehr erfahren', // Optional: Text für den Link nach dem Hinweistext
@@ -169,6 +172,7 @@ Sie können auch Datenattribute für die grundlegende Konfiguration verwenden:
   data-hint-text="Mit dem Absenden stimmen Sie unseren Nutzungsbedingungen zu."
   data-hint-link-text="Mehr erfahren"
   data-hint-link-url="https://ihre-domain.de/nutzungsbedingungen"
+  data-use-system-font="true"
   data-extra-input-fields='[{"type":"email","required":true,"label":"E-Mail Adresse","placeholder":"Ihre E-Mail eingeben"},{"type":"address","label":"Vollständige Adresse","placeholder":"Straße, PLZ, Ort"}]'
 ></script>
 ```
@@ -227,9 +231,28 @@ Nach dem Absenden des Formulars wird ein Erfolgsbildschirm angezeigt mit:
 - Informationen, dass der Benutzer bald kontaktiert wird
 - Einem "Bereitgestellt von HalloPetra"-Hinweis mit einem Link zur Website
 
+### Schrift-Konfiguration (DSGVO-Konformität)
+
+Standardmäßig verwendet das Widget Google Fonts (Inter-Schriftfamilie) für ein modernes Erscheinungsbild. Wenn Sie jedoch Datenschutzbedenken haben (DSGVO-Konformität), können Sie `use_system_font: true` setzen, um stattdessen die Systemschriften zu verwenden. Dies vermeidet das Laden von Google Fonts vollständig:
+
+```javascript
+ContactWidget.init({
+  customerId: "ihre-kunden-id",
+  use_system_font: true // Vermeidet Google Fonts, verwendet stattdessen Systemschriften
+});
+```
+
+Wenn `use_system_font` aktiviert ist, verwendet das Widget:
+- Systemschriften unter macOS (San Francisco)
+- Segoe UI unter Windows
+- Roboto unter Android
+- Arial als Fallback
+
+Dies stellt sicher, dass keine externen Schriftdateien von Google-Servern geladen werden und erfüllt die DSGVO- und Datenschutzanforderungen.
+
 ### Design-Anpassung
 
-Das Widget verwendet die Inter-Schriftfamilie und ein klares, modernes Design mit:
+Das Widget verwendet ein klares, modernes Design mit:
 - Einem kreisförmigen hellblauen (#E1EFFE) Button, der nur das Petra-Logo zeigt
 - Einer freundlichen Sprechblase, die nach 5 Sekunden erscheint
 - Formularfeldern mit Validierung und Fehlermeldungen (werden erst nach dem Versuch des Absendens angezeigt)

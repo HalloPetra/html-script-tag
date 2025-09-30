@@ -1,24 +1,31 @@
 // Contact Form Widget - Embeddable script
 
 // Create and inject CSS styles
-function injectStyles() {
-  // Add Inter font
-  const fontLink1 = document.createElement("link");
-  fontLink1.rel = "preconnect";
-  fontLink1.href = "https://fonts.googleapis.com";
+function injectStyles(useSystemFont = false) {
+  // Add Inter font only if not using system font
+  if (!useSystemFont) {
+    const fontLink1 = document.createElement("link");
+    fontLink1.rel = "preconnect";
+    fontLink1.href = "https://fonts.googleapis.com";
 
-  const fontLink2 = document.createElement("link");
-  fontLink2.rel = "preconnect";
-  fontLink2.href = "https://fonts.gstatic.com";
-  fontLink2.crossOrigin = "anonymous";
+    const fontLink2 = document.createElement("link");
+    fontLink2.rel = "preconnect";
+    fontLink2.href = "https://fonts.gstatic.com";
+    fontLink2.crossOrigin = "anonymous";
 
-  const fontLink3 = document.createElement("link");
-  fontLink3.rel = "stylesheet";
-  fontLink3.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
+    const fontLink3 = document.createElement("link");
+    fontLink3.rel = "stylesheet";
+    fontLink3.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
 
-  document.head.appendChild(fontLink1);
-  document.head.appendChild(fontLink2);
-  document.head.appendChild(fontLink3);
+    document.head.appendChild(fontLink1);
+    document.head.appendChild(fontLink2);
+    document.head.appendChild(fontLink3);
+  }
+
+  // Determine font family based on useSystemFont setting
+  const fontFamily = useSystemFont
+    ? '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+    : "'Inter', sans-serif";
 
   // Add styles
   const styleSheet = document.createElement("style");
@@ -83,7 +90,7 @@ function injectStyles() {
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
     }
 
     .speech-bubble:after {
@@ -107,7 +114,7 @@ function injectStyles() {
       width: 320px;
       max-height: 80vh;
       overflow-y: auto;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
       z-index: 9999;
     }
 
@@ -117,7 +124,7 @@ function injectStyles() {
       color: #1e293b;
       font-size: 18px;
       font-weight: 600;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
     }
 
     .contact-popup-description {
@@ -126,7 +133,7 @@ function injectStyles() {
       font-size: 14px;
       color: #64748b;
       line-height: 1.4;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
     }
 
     .form-group {
@@ -139,14 +146,14 @@ function injectStyles() {
       font-weight: 500;
       font-size: 14px;
       color: #4b5563;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
     }
 
     .form-group input {
       width: 100%;
       padding: 10px 12px;
       font-size: 14px;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       box-sizing: border-box;
@@ -176,7 +183,7 @@ function injectStyles() {
       width: 100%;
       padding: 10px 12px;
       font-size: 14px;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       box-sizing: border-box;
@@ -202,7 +209,7 @@ function injectStyles() {
       width: 100px;
       padding: 10px 12px;
       font-size: 14px;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       background-color: #f8fafc;
@@ -231,7 +238,7 @@ function injectStyles() {
       color: #64748b;
       margin-bottom: 16px;
       line-height: 1.4;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
     }
 
     .hint-text a {
@@ -253,7 +260,7 @@ function injectStyles() {
       width: 100%;
       font-weight: 600;
       font-size: 14px;
-      font-family: 'Inter', sans-serif;
+      font-family: ${fontFamily};
       transition: all 0.2s ease;
     }
 
@@ -1139,8 +1146,8 @@ function initContactWidget(config = {}) {
   //   }
   // ]
 
-  // Inject CSS
-  injectStyles();
+  // Inject CSS with system font option
+  injectStyles(config.use_system_font);
 
   // Create widget elements
   const elements = createWidgetElements(config);
@@ -1245,13 +1252,19 @@ document.addEventListener('DOMContentLoaded', () => {
       'namePlaceholder', 'phonePlaceholder', 'logoSrc', 'formDescription',
       'speechBubbleText', 'apiUrl', 'customerId', 'successTitle',
       'greetingText', 'extraInputFields', 'emailLabel', 'emailPlaceholder', 'addressLabel', 'addressPlaceholder',
-      'hintText', 'hintLinkText', 'hintLinkUrl', 'outgoingPhoneNumber'
+      'hintText', 'hintLinkText', 'hintLinkUrl', 'outgoingPhoneNumber', 'use_system_font'
     ];
 
     configAttributes.forEach(attr => {
       const dataAttr = `data-${attr.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
       if (scriptTag.hasAttribute(dataAttr)) {
-        config[attr] = scriptTag.getAttribute(dataAttr);
+        const value = scriptTag.getAttribute(dataAttr);
+        // Convert boolean strings to actual booleans
+        if (attr === 'use_system_font') {
+          config[attr] = value === 'true' || value === '';
+        } else {
+          config[attr] = value;
+        }
       }
     });
 
